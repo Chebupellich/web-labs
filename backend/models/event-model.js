@@ -31,6 +31,11 @@ const EventModel = sequelize.define('events', {
             key: 'id'
         },
         onDelete: 'CASCADE',
+    },
+    category: {
+        type: DataTypes.ENUM,
+        values: ['концерт', 'лекция', 'выставка'],
+        allowNull: false,
     }
 });
 
