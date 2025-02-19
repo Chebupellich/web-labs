@@ -5,12 +5,15 @@ const cors = require("cors");
 const userModel = require('./models/user-model');
 const eventModel = require('./models/event-model')
 
-const router = require("./routing/test-routes.js");
+const eventRoutes = require("./routing/event-routes.js");
+const userRoutes = require("./routing/user-routes.js")
+
 const errorMiddleware = require("./middleware/error-middleware.js");
 
 const PORT = process.env.PORT || 5000
 const app = express()
 
+app.use(express.json())
 app.use(
     cors({
         credentials: true,
@@ -18,8 +21,9 @@ app.use(
     })
 )
 
-app.use(router)
-app.use(errorMiddleware);
+app.use(eventRoutes)
+app.use(userRoutes)
+app.use(errorMiddleware)
 
 const start = async () => {
     try {
