@@ -18,6 +18,12 @@ const UserModel = sequelize.define('app_users', {
         unique: true,
         allowNull: false,
     },
+    password: {
+        type: DataTypes.STRING,
+        unique: false,
+        allowNull: false,
+        defaultValue: '',
+    }
 })
 
 export default UserModel

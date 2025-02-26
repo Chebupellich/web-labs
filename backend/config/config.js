@@ -25,7 +25,8 @@ const config = {
         }
     },
     auth: {
-        //jwtSecret: process.env.JWT_SECRET,
+        jwtSecret: process.env.JWT_SECRET_KEY,
+        jwtExpire: '1h'
     },
 };
 
