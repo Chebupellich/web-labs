@@ -1,17 +1,48 @@
-const { Sequelize } = require('sequelize');
-require('dotenv').config();
+import Sequelize from 'sequelize';
+import config from './config.js';
 
-const sequelize = new Sequelize(process.env.DB_NAME, process.env.DB_USER, process.env.DB_PASSWORD, {
-    dialect: "postgres",
-    logging: false
-});
-
-sequelize.authenticate()
-    .then(() => {
-        console.log('DB Connected');
-    })
-    .catch(err => {
-        console.error('connection error:', err);
+const sequelize = new Sequelize(
+    config.db.dbDefaultName,
+    config.db.user,
+    config.db.password,
+    {
+        dialect: 'postgres',
+        logging: false,
+        define: {
+            freezeTableName: true,
+        },
+        pool: {
+            max: 10,
+            min: 0,
+            acquire: 30000,
+            idle: 10000,
+        },
+        timezone: '+00:00',
     });
 
-module.exports = sequelize;
+
+const connectDB = async () => {
+    try {
+        await sequelize.authenticate()
+
+        const result = await sequelize.query(`
+            SELECT 1 FROM pg_database WHERE datname = '${config.db.dbName}';
+        `)
+
+        if (result[0].length === 0) {
+            await sequelize.query(`CREATE DATABASE ${config.db.dbName};`)
+            console.log(`Database ${config.db.dbName} created successfully.`)
+        } else {
+            console.log(`Database ${config.db.dbName} already exists.`);
+        }
+
+        sequelize.options.database = config.db.dbName
+        await sequelize.authenticate()
+        await sequelize.sync({ force: false });
+        console.log('db Connected')
+    } catch (err) {
+        console.error('db connection error:', err)
+    }
+}
+
+export { sequelize, connectDB }

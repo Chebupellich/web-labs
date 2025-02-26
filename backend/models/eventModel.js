@@ -1,7 +1,7 @@
-const { DataTypes } = require('sequelize');
-const sequelize = require('../config/db');
-
-const UserModel = require('./user-model');
+import { DataTypes } from 'sequelize';
+import { sequelize } from '../config/db.js';
+import UserModel from './userModel.js';
+import CategoryModel from './categoryModel.js';
 
 const EventModel = sequelize.define('events', {
     id: {
@@ -32,13 +32,18 @@ const EventModel = sequelize.define('events', {
         },
         onDelete: 'CASCADE',
     },
-    category: {
-        type: DataTypes.ENUM,
-        values: ['концерт', 'лекция', 'выставка'],
-        allowNull: false,
+    categoryId: {
+        type: DataTypes.INTEGER,
+        allowNull: true,
+        references: {
+            model: CategoryModel,
+            key: 'id'
+        },
+        onDelete: 'SET NULL',
     }
-});
+})
 
-EventModel.belongsTo(UserModel, { foreignKey: 'createdBy' });
+EventModel.belongsTo(UserModel, { foreignKey: 'createdBy' })
+EventModel.belongsTo(CategoryModel, { foreignKey: 'categoryId' })
 
-module.exports = EventModel;
+export default EventModel
