@@ -60,20 +60,34 @@ class UserController {
      *       500:
      *         description: Internal server error
      */
-    async createUser(req, res, next) {
+    async registration(req, res, next) {
         try {
-            const { name, email } = req.body
-            if (!name || !email) {
-                return res.status(400).json({ message: "name and email required" })
+            const { name, email, password } = req.body
+            if (!name || !email || !password) {
+                return res.status(400).json({ message: "invalid input. required fields: name, email, password" })
             }
 
-            const newUser = await UserService.createUser(name, email)
-            if (!newUser) {
+            const existingUser = await UserService.createUser(name, email, password)
+            if (existingUser) {
                 return res.status(400).json({ message: "user already exists" })
             }
-            return res.status(201).json(newUser)
+            return res.status(201).json({ message: "registration successful" })
         } catch (e) {
             next(e);
+        }
+    }
+
+    async login(req, res, next) {
+        try {
+            const { email, password } = req.body
+            if (!email || !password) {
+                return res.status(400).json({ message: "invalid input. required fields: email, password" })
+            }
+
+            const userData = await UserService.login(email, password)
+            return res.status(201).json(userData)
+        } catch (e) {
+            next(e)
         }
     }
 }

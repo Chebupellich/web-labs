@@ -13,19 +13,24 @@ import eventRoutes from "./routing/eventRoutes.js";
 import userRoutes from "./routing/userRoutes.js";
 import errorMiddleware from "./middleware/errorMiddleware.js";
 import swaggerSpec from "./utils/swaggerConf.js";
+import passport from "passport";
+import { passportConfig } from "./middleware/authMiddleware.js";
+import authRouter from "./routing/authRouter.js";
 
 
 const app = express()
-
+passportConfig(passport)
 
 app.use('/api-docs', serve, setup(swaggerSpec));
 app.use(rateLimit(config.server.rateLimiter));
 app.use(json())
 app.use(cors(config.server.cors))
+app.use(passport.initialize())
 
 app.use(loggerMiddleware)
-app.use(eventRoutes)
+app.use(authRouter)
 app.use(userRoutes)
+app.use(eventRoutes)
 app.use(errorMiddleware)
 
 
