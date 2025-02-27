@@ -1,8 +1,9 @@
-import { AuthorizationError } from "../errors/apiErrors.js";
+import { AuthorizationError, ForbiddenError } from "../errors/apiErrors.js";
 import UserModel from "../models/userModel.js";
 import bcrypt from "bcrypt"
 import tokenService from "./tokenService.js";
 import UserDto from "../dtos/userDto.js";
+import config from "../config/config.js";
 class UserService {
     async getUsers() {
         const users = await UserModel.findAll()
@@ -27,8 +28,20 @@ class UserService {
             throw new AuthorizationError("Incorrect login or password")
         }
 
+        if (existingUser.lockedUntil && new Date() < new Date(existingUser.lockedUntil)) {
+            throw new ForbiddenError(`Account is locked. Try again after ${existingUser.lockedUntil}`)
+        }
+
         const isPasswordsEqual = await bcrypt.compare(password, existingUser.password)
         if (!isPasswordsEqual) {
+            existingUser.failedAttempts += 1
+
+            if (existingUser.failedAttempts >= config.auth.maxFailedAttempts) {
+                existingUser.lockedUntil = new Date(Date.now() + config.auth.lockTime)
+                existingUser.failedAttempts = 0
+            }
+
+            await existingUser.save()
             throw new AuthorizationError("Incorrect login or password")
         }
 

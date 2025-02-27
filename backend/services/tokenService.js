@@ -4,7 +4,7 @@ import jwt from "jsonwebtoken"
 class TokenService {
     async GenerateToken(user) {
         const payload = { id: user.id };
-        const token = jwt.sign(payload, config.auth.jwtSecret, { expiresIn: '1h' });
+        const token = jwt.sign(payload, config.auth.jwtSecret, { expiresIn: config.auth.jwtExpire });
         return token;
     }
 }

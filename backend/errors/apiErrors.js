@@ -14,6 +14,14 @@ class AuthorizationError extends Error {
     }
 }
 
+class ForbiddenError extends Error {
+    constructor(message) {
+        super(message);
+        this.name = 'ForbiddenError';
+        this.statusCode = 403;
+    }
+}
+
 class NotFoundError extends Error {
     constructor(message) {
         super(message);
@@ -24,4 +32,9 @@ class NotFoundError extends Error {
 
 
 
-export { ValidationError, AuthorizationError, NotFoundError }
+export {
+    ValidationError,
+    AuthorizationError,
+    NotFoundError,
+    ForbiddenError
+}

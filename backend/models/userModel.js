@@ -23,6 +23,14 @@ const UserModel = sequelize.define('app_users', {
         unique: false,
         allowNull: false,
         defaultValue: '',
+    },
+    failedAttempts: {
+        type: DataTypes.INTEGER,
+        defaultValue: 0
+    },
+    lockedUntil: {
+        type: DataTypes.DATE,
+        allowNull: true
     }
 })
 
