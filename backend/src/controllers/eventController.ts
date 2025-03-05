@@ -1,7 +1,7 @@
-import EventService from "../services/eventService.js";
+import { Request, Response, NextFunction } from 'express';
+import EventService from '../services/eventService.js';
 
 class EventController {
-
     /**
      * @swagger
      * /events:
@@ -29,13 +29,18 @@ class EventController {
      *       500:
      *         description: Internal server error
      */
-    async getEvents(req, res, next) {
+    static async getEvents(
+        req: Request,
+        res: Response,
+        next: NextFunction,
+    ): Promise<void> {
         try {
-            const { categoryId } = req.body
-            const events = await EventService.getEvents(categoryId)
-            return res.status(200).json(events)
+            const { categoryId }: { categoryId?: string } = req.query;
+
+            const events = await EventService.getEvents(categoryId);
+            res.status(200).json(events);
         } catch (e) {
-            next(e)
+            next(e);
         }
     }
 
@@ -72,20 +77,27 @@ class EventController {
      *       500:
      *         description: Internal server error
      */
-    async getEvent(req, res, next) {
+    static async getEvent(
+        req: Request,
+        res: Response,
+        next: NextFunction,
+    ): Promise<void> {
         try {
-            const { eventId } = req.params
-            const { eventTitle } = req.body
+            const { eventId }: { eventId?: string } = req.params;
+            const eventTitle: string = req.query.eventTitle as string || '';
 
             if (!eventId) {
-                return res.status(400).json({ message: "eventId or eventTitle required" })
+                res.status(400).json({
+                    message: 'eventId required',
+                });
+                return;
             }
 
-            const event = await EventService.getEvent(eventId, eventTitle)
+            const event = await EventService.getEvent(eventId, eventTitle);
 
-            return res.status(200).json(event)
+            res.status(200).json(event);
         } catch (e) {
-            next(e)
+            next(e);
         }
     }
 
@@ -130,27 +142,42 @@ class EventController {
      *       500:
      *         description: Internal server error
      */
-    async createEvent(req, res, next) {
+    static async createEvent(
+        req: Request,
+        res: Response,
+        next: NextFunction,
+    ): Promise<void> {
         try {
-            const { title, description, date, createdBy, categoryId } = req.body
+            const { title, description, date, createdBy, categoryId } =
+                req.body;
 
             if (!title || !date || !createdBy) {
-                return res.status(400).json({
-                    message: "required fields required: title, date, created by, category"
-                })
+                res.status(400).json({
+                    message:
+                        'required fields required: title, date, created by, category',
+                });
+                return;
             }
 
-            const eventDate = new Date(date)
+            const eventDate = new Date(date);
             if (isNaN(eventDate.getTime())) {
-                return res.status(400).json({
-                    message: "invalid date format, required YYYY-MM-DDTHH:mm:ss.sssZ "
-                })
+                res.status(400).json({
+                    message:
+                        'invalid date format, required YYYY-MM-DDTHH:mm:ss.sssZ ',
+                });
+                return;
             }
 
-            const event = await EventService.createEvent(title, description, date, createdBy, categoryId)
-            return res.status(201).json(event)
+            const event = await EventService.createEvent(
+                title,
+                description,
+                date,
+                createdBy,
+                categoryId,
+            );
+            res.status(201).json(event);
         } catch (e) {
-            next(e)
+            next(e);
         }
     }
 
@@ -199,30 +226,46 @@ class EventController {
      *       500:
      *         description: Internal server error
      */
-    async updateEvent(req, res, next) {
+    static async updateEvent(
+        req: Request,
+        res: Response,
+        next: NextFunction,
+    ): Promise<void> {
         try {
-            const { eventId } = req.params
-            const { title, description, date, createdBy, categoryId } = req.body
+            const { eventId } = req.params;
+            const { title, description, date, createdBy, categoryId } =
+                req.body;
 
             if (!eventId) {
-                return res.status(400).json({ message: "eventId required" })
+                res.status(400).json({ message: 'eventId required' });
+                return;
             }
 
-            let eventDate = null
+            let eventDate: Date = new Date();
 
             if (date) {
-                eventDate = new Date(date)
+                eventDate = new Date(date);
                 if (isNaN(eventDate.getTime())) {
-                    return res.status(400).json({
-                        message: "invalid date format, required YYYY-MM-DDTHH:mm:ss.sssZ "
-                    })
+                    res.status(400).json({
+                        message:
+                            'invalid date format, required YYYY-MM-DDTHH:mm:ss.sssZ ',
+                    });
+                    return;
                 }
             }
-            const event = await EventService.updateEvent(eventId, title, description, eventDate, createdBy, categoryId)
 
-            return res.status(200).json(event)
+            const event = await EventService.updateEvent(
+                eventId,
+                title,
+                description,
+                eventDate,
+                createdBy,
+                categoryId,
+            );
+
+            res.status(200).json(event);
         } catch (e) {
-            next(e)
+            next(e);
         }
     }
 
@@ -247,20 +290,25 @@ class EventController {
      *       500:
      *         description: Internal server error
      */
-    async deleteEvent(req, res, next) {
+    static async deleteEvent(
+        req: Request,
+        res: Response,
+        next: NextFunction,
+    ): Promise<void> {
         try {
-            const { eventId } = req.params
+            const { eventId } = req.params;
 
-            const result = await EventService.deleteEvent(eventId)
+            const result = await EventService.deleteEvent(eventId);
             if (!result) {
-                return res.status(400).json({ message: `event ${eventId} not found` })
+                res.status(400).json({ message: `event ${eventId} not found` });
+                return;
             }
 
-            return res.status(200).send()
+            res.status(200).send();
         } catch (e) {
-            next(e)
+            next(e);
         }
     }
 }
 
-export default new EventController()
+export default EventController;

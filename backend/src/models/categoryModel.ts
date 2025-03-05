@@ -13,7 +13,7 @@ const CategoryModel = sequelize.define('categories', {
         type: DataTypes.STRING,
         allowNull: false,
         unique: true,
-    }
-})
+    },
+});
 
-export default CategoryModel
+export default CategoryModel;

@@ -1,7 +1,7 @@
-import UserService from "../services/userService.js";
+import { Request, Response, NextFunction } from 'express';
+import UserService from '../services/userService.js';
 
 class UserController {
-
     /**
      * @swagger
      * /users:
@@ -20,12 +20,16 @@ class UserController {
      *       500:
      *         description: Internal server error
      */
-    async getUsers(req, res, next) {
+    static async getUsers(
+        req: Request,
+        res: Response,
+        next: NextFunction,
+    ): Promise<void> {
         try {
-            const users = await UserService.getUsers()
-            return res.status(200).json(users)
+            const users = await UserService.getUsers();
+            res.status(200).json(users);
         } catch (e) {
-            next(e)
+            next(e);
         }
     }
 
@@ -60,36 +64,56 @@ class UserController {
      *       500:
      *         description: Internal server error
      */
-    async registration(req, res, next) {
+    static async registration(
+        req: Request,
+        res: Response,
+        next: NextFunction,
+    ): Promise<void> {
         try {
-            const { name, email, password } = req.body
+            const { name, email, password } = req.body;
             if (!name || !email || !password) {
-                return res.status(400).json({ message: "invalid input. required fields: name, email, password" })
+                res.status(400).json({
+                    message:
+                        'invalid input. required fields: name, email, password',
+                });
+                return;
             }
 
-            const existingUser = await UserService.createUser(name, email, password)
+            const existingUser = await UserService.createUser(
+                name,
+                email,
+                password,
+            );
             if (existingUser) {
-                return res.status(400).json({ message: "user already exists" })
+                res.status(400).json({ message: 'user already exists' });
+                return;
             }
-            return res.status(201).json({ message: "registration successful" })
+            res.status(201).json({ message: 'registration successful' });
         } catch (e) {
             next(e);
         }
     }
 
-    async login(req, res, next) {
+    static async login(
+        req: Request,
+        res: Response,
+        next: NextFunction,
+    ): Promise<void> {
         try {
-            const { email, password } = req.body
+            const { email, password } = req.body;
             if (!email || !password) {
-                return res.status(400).json({ message: "invalid input. required fields: email, password" })
+                res.status(400).json({
+                    message: 'invalid input. required fields: email, password',
+                });
+                return;
             }
 
-            const userData = await UserService.login(email, password)
-            return res.status(201).json(userData)
+            const userData = await UserService.login(email, password);
+            res.status(200).json(userData);
         } catch (e) {
-            next(e)
+            next(e);
         }
     }
 }
 
-export default new UserController()
+export default UserController;

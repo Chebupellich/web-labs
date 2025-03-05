@@ -1,4 +1,4 @@
-import swaggerJSDoc from "swagger-jsdoc"
+import swaggerJSDoc from 'swagger-jsdoc';
 
 const swaggerOptions = {
     definition: {
@@ -6,7 +6,8 @@ const swaggerOptions = {
         info: {
             title: 'API для управления событиями',
             version: '1.0.0',
-            description: 'Документация API для работы с событиями и пользователями',
+            description:
+                'Документация API для работы с событиями и пользователями',
         },
         servers: [
             {
@@ -14,9 +15,9 @@ const swaggerOptions = {
             },
         ],
     },
-    apis: ['./controllers/*.js'],
-}
+    apis: ['./controllers/*.ts'],
+};
 
-const swaggerSpec = swaggerJSDoc(swaggerOptions)
+const swaggerSpec = swaggerJSDoc(swaggerOptions);
 
-export default swaggerSpec
+export default swaggerSpec;

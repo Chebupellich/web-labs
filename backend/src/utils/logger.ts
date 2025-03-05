@@ -1,3 +1,4 @@
+import { Request, Response, NextFunction } from 'express';
 import pino from 'pino';
 
 const logger = pino({
@@ -9,17 +10,22 @@ const logger = pino({
             translateTime: 'SYS:standard',
             ignore: 'pid,hostname',
             singleLine: false,
-            messageFormat: '{method} {url} | {statusCode} | - {responseTime}ms | {remoteAddress}',
-            hideObject: true
-        }
-    }
-})
+            messageFormat:
+                '{method} {url} | {statusCode} | - {responseTime}ms | {remoteAddress}',
+            hideObject: true,
+        },
+    },
+});
 
-const loggerMiddleware = async (req, res, next) => {
-    const start = Date.now()
+const loggerMiddleware = async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+): Promise<void> => {
+    const start = Date.now();
 
     res.on('finish', () => {
-        const duration = Date.now() - start
+        const duration = Date.now() - start;
 
         if (res.statusCode >= 500) {
             logger.error({
@@ -28,7 +34,7 @@ const loggerMiddleware = async (req, res, next) => {
                 statusCode: res.statusCode,
                 responseTime: duration,
                 remoteAddress: req.socket.remoteAddress,
-            })
+            });
         } else if (res.statusCode >= 400) {
             logger.warn({
                 method: req.method,
@@ -36,7 +42,7 @@ const loggerMiddleware = async (req, res, next) => {
                 statusCode: res.statusCode,
                 responseTime: duration,
                 remoteAddress: req.socket.remoteAddress,
-            })
+            });
         } else {
             logger.info({
                 method: req.method,
@@ -44,13 +50,11 @@ const loggerMiddleware = async (req, res, next) => {
                 statusCode: res.statusCode,
                 responseTime: duration,
                 remoteAddress: req.socket.remoteAddress,
-            })
+            });
         }
+    });
 
+    next();
+};
 
-    })
-
-    next()
-}
-
-export { logger, loggerMiddleware }
+export { logger, loggerMiddleware };
