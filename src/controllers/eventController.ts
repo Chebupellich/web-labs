@@ -83,12 +83,11 @@ class EventController {
         next: NextFunction,
     ): Promise<void> {
         try {
-            const { eventId }: { eventId?: string } = req.params;
-            const eventTitle: string = (req.query.eventTitle as string) || '';
+            const { eventId, eventTitle } = req.body;
 
-            if (!eventId) {
+            if (!eventId && !eventTitle) {
                 res.status(400).json({
-                    message: 'eventId required',
+                    message: 'eventId or eventTitle required',
                 });
                 return;
             }
@@ -305,6 +304,38 @@ class EventController {
             }
 
             res.status(200).send();
+        } catch (e) {
+            next(e);
+        }
+    }
+
+    static async getCategories(
+        req: Request,
+        res: Response,
+        next: NextFunction,
+    ): Promise<void> {
+        try {
+            const { categoryId }: { categoryId?: number } = req.query;
+
+            const events = await EventService.getCategories(categoryId);
+            res.status(200).json(events);
+        } catch (e) {
+            next(e);
+        }
+    }
+
+    static async createCategory(
+        req: Request,
+        res: Response,
+        next: NextFunction,
+    ): Promise<void> {
+        try {
+            const { name } = req.body;
+            if (!name && name.trim() == '') {
+                res.status(400).json({ message: `title required` });
+            }
+            const result = await EventService.createCategory(name);
+            res.status(200).json(result);
         } catch (e) {
             next(e);
         }

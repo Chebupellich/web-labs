@@ -6,7 +6,7 @@ import { NotFoundError } from '@errors/apiErrors';
 class EventService {
     static async getEvents(categoryId: string | undefined) {
         const events = await EventModel.findAll({
-            where: categoryId ? { categoryId } : { categoryId: null },
+            where: categoryId ? { categoryId } : {},
             include: [
                 {
                     model: CategoryModel,
@@ -22,7 +22,10 @@ class EventService {
         return events;
     }
 
-    static async getEvent(eventId: string, eventTitle: string) {
+    static async getEvent(
+        eventId: string | undefined,
+        eventTitle: string | undefined,
+    ) {
         const filter: any = {};
 
         if (eventId) {
@@ -43,7 +46,7 @@ class EventService {
             ],
         });
 
-        return event || {};
+        return event;
     }
 
     static async createEvent(
@@ -83,7 +86,7 @@ class EventService {
     ) {
         const event = await EventModel.findOne({ where: { id: eventId } });
         if (!event) {
-            throw new NotFoundError('requested user not found');
+            throw new NotFoundError('requested event not found');
         }
 
         if (categoryId) {
@@ -95,15 +98,14 @@ class EventService {
             }
         }
 
-        event.id = Number(eventId) || event.id;
-        event.title = title || event.title;
-        event.description = description || event.description;
-        event.date = date || event.date;
-        event.createdBy = createdBy || event.createdBy;
-        event.categoryId = categoryId || event.categoryId;
-        await event.save();
-
-        return event;
+        const eventResp = event.update({
+            title: title ?? event.title,
+            description: description ?? event.description,
+            date: date ?? event.date,
+            createdBy: createdBy ?? event.createdBy,
+            categoryId: categoryId ?? event.categoryId,
+        });
+        return eventResp;
     }
 
     static async deleteEvent(id: string) {
@@ -115,6 +117,19 @@ class EventService {
 
         const deleteRes = await event.destroy();
         return deleteRes;
+    }
+
+    static async getCategories(categoryId: number | undefined) {
+        const events = await CategoryModel.findAll({
+            where: categoryId ? { id: categoryId } : {},
+        });
+        return events;
+    }
+
+    static async createCategory(name: string) {
+        const newEvent = await CategoryModel.create({ name });
+
+        return newEvent;
     }
 }
 
