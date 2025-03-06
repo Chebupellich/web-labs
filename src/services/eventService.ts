@@ -2,7 +2,6 @@ import EventModel from '../models/eventModel.js';
 import UserModel from '../models/userModel.js';
 import CategoryModel from '../models/categoryModel.js';
 import { NotFoundError } from '../errors/apiErrors.js';
-import { error } from 'winston';
 
 class EventService {
     static async getEvents(categoryId: string | undefined) {

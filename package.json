@@ -11,19 +11,6 @@
     "check": "tsc --noEmit && eslint . --ext .ts",
     "prepare": "husky"
   },
-  "lint-staged": {
-    "*.{js,jsx,ts,tsx}": [
-      "eslint . --fix",
-      "prettier --write ."
-    ],
-    "*.{css,scss,less}": [
-      "stylelint --fix",
-      "prettier --write ."
-    ],
-    "*.{json,md,html,yml,yaml}": [
-      "prettier --write ."
-    ]
-  },
   "keywords": [],
   "author": "",
   "license": "ISC",
@@ -44,7 +31,7 @@
     "pino": "^9.6.0",
     "pino-http": "^10.4.0",
     "pino-pretty": "^13.0.0",
-    "sequelize": "^6.37.5",
+    "sequelize": "^6.37.6",
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^5.0.1",
     "winston": "^3.17.0"

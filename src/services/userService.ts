@@ -8,7 +8,7 @@ import config from '../config/config.js';
 class UserService {
     async getUsers() {
         const users = await UserModel.findAll();
-        const userDtos = users.map(user => new UserDto(user));
+        const userDtos = users.map((user) => new UserDto(user));
 
         return userDtos;
     }

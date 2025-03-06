@@ -18,7 +18,8 @@ interface EventCreationAttributes extends Optional<EventAttributes, 'id'> {
 
 class EventModel
     extends Model<EventAttributes, EventCreationAttributes>
-    implements EventAttributes {
+    implements EventAttributes
+{
     public id!: number;
     public title!: string;
     public description!: string | null;

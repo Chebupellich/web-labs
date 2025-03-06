@@ -11,11 +11,12 @@ interface UserAttributes {
 }
 
 interface UserCreationAttributes
-    extends Optional<UserAttributes, 'id' | 'lockedUntil'> { }
+    extends Optional<UserAttributes, 'id' | 'lockedUntil'> {}
 
 class UserModel
     extends Model<UserAttributes, UserCreationAttributes>
-    implements UserAttributes {
+    implements UserAttributes
+{
     public id!: number;
     public name!: string;
     public email!: string;

@@ -84,7 +84,7 @@ class EventController {
     ): Promise<void> {
         try {
             const { eventId }: { eventId?: string } = req.params;
-            const eventTitle: string = req.query.eventTitle as string || '';
+            const eventTitle: string = (req.query.eventTitle as string) || '';
 
             if (!eventId) {
                 res.status(400).json({

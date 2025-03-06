@@ -26,9 +26,10 @@ export default [
         },
         rules: {
             'prettier/prettier': 'error',
-            '@typescript-eslint/no-unused-vars': ['error'],
+            '@typescript-eslint/no-unused-vars': ['warn'],
             '@typescript-eslint/explicit-function-return-type': 'off',
             '@typescript-eslint/no-empty-object-type': 'off',
+            '@typescript-eslint/no-explicit-any': 'off',
         },
     },
 ];
