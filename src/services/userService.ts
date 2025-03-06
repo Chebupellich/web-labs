@@ -1,9 +1,9 @@
-import { AuthorizationError, ForbiddenError } from '../errors/apiErrors.js';
-import UserModel from '../models/userModel.js';
+import { AuthorizationError, ForbiddenError } from '@errors/apiErrors.js';
+import UserModel from '@models/userModel';
 import bcrypt from 'bcrypt';
 import tokenService from './tokenService.js';
-import UserDto from '../dtos/userDto.js';
-import config from '../config/config.js';
+import UserDto from '@dtos/userDto.js';
+import config from '@config/config.js';
 
 class UserService {
     async getUsers() {

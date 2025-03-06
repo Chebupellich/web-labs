@@ -1,18 +1,18 @@
 import express, { json, Express } from 'express';
+import { serve, setup } from 'swagger-ui-express';
 import rateLimit from 'express-rate-limit';
 import cors from 'cors';
-import { serve, setup } from 'swagger-ui-express';
-import { loggerMiddleware } from './utils/logger.js';
-
-import config from './config/config.js';
-import { connectDB } from './config/db.js';
-import eventRoutes from './routing/eventRoutes.js';
-import userRoutes from './routing/userRoutes.js';
-import errorMiddleware from './middleware/errorMiddleware.js';
-import swaggerSpec from './utils/swaggerConf.js';
 import passport from 'passport';
-import { passportConfig } from './middleware/authMiddleware.js';
-import authRouter from './routing/authRouter.js';
+
+import { connectDB } from '@config/db.js';
+import config from '@config/config.js';
+import eventRoutes from '@routes/eventRoutes.js';
+import userRoutes from '@routes/userRoutes.js';
+import { loggerMiddleware } from '@utils/logger.js';
+import errorMiddleware from '@middleware/errorMiddleware.js';
+import swaggerSpec from '@utils/swaggerConf.js';
+import { passportConfig } from '@middleware/authMiddleware.js';
+import authRouter from '@routes/authRouter';
 
 const app: Express = express();
 passportConfig(passport);

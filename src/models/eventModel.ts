@@ -1,5 +1,5 @@
 import { DataTypes, Model, Optional } from 'sequelize';
-import { sequelize } from '../config/db.js';
+import { sequelize } from '@config/db';
 import UserModel from './userModel.js';
 import CategoryModel from './categoryModel.js';
 

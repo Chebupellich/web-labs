@@ -1,6 +1,6 @@
 import { Router } from 'express';
-import EventController from '../controllers/eventController.js';
 import passport from 'passport';
+import EventController from '@controllers/eventController';
 
 const eventRouter = Router();
 

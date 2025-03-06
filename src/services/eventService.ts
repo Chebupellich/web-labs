@@ -1,7 +1,7 @@
-import EventModel from '../models/eventModel.js';
-import UserModel from '../models/userModel.js';
-import CategoryModel from '../models/categoryModel.js';
-import { NotFoundError } from '../errors/apiErrors.js';
+import EventModel from '@models/eventModel';
+import UserModel from '@models/userModel';
+import CategoryModel from '@models/categoryModel';
+import { NotFoundError } from '@errors/apiErrors';
 
 class EventService {
     static async getEvents(categoryId: string | undefined) {

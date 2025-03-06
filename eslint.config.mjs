@@ -7,7 +7,7 @@ import eslintPluginPrettier from 'eslint-plugin-prettier';
 /** @type {import('eslint').Linter.Config[]} */
 export default [
     { files: ['**/*.{js,mjs,cjs,ts}'] },
-    { ignores: ['dist/*'] },
+    { ignores: ['dist/*', 'tsconfig-paths-bootstrap.js'] },
     {
         languageOptions: {
             globals: {

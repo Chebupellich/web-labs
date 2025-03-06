@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import EventService from '../services/eventService.js';
+import EventService from '@services/eventService';
 
 class EventController {
     /**
