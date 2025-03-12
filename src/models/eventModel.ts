@@ -1,48 +1,53 @@
-import { DataTypes, Model, Optional } from 'sequelize';
+import {
+    CreationOptional,
+    DataTypes,
+    ForeignKey,
+    InferAttributes,
+    InferCreationAttributes,
+    Model,
+    NonAttribute,
+} from 'sequelize';
 import { sequelize } from '@config/db';
-import UserModel from './userModel.js';
-import CategoryModel from './categoryModel.js';
+import { User } from './userModel.js';
 
-interface EventAttributes {
-    id: number;
-    title: string;
-    description: string | null;
-    date: Date;
-    createdBy: number;
-    categoryId: number | null;
+enum Categories {
+    Concert = 'Concert',
+    Lecture = 'Lecture',
+    Exhibition = 'Exhibition',
 }
 
-interface EventCreationAttributes extends Optional<EventAttributes, 'id'> {
-    // Этот интерфейс может быть расширен в будущем
+class Event extends Model<
+    InferAttributes<Event>,
+    InferCreationAttributes<Event>
+> {
+    declare id: CreationOptional<number>;
+    declare title: string;
+    declare description: string | null;
+    declare date: Date;
+    declare createdBy: ForeignKey<User['id']>;
+    declare category: Categories;
+
+    declare owner?: NonAttribute<User>;
+
+    declare createdAt: CreationOptional<Date>;
+    declare updatedAt: CreationOptional<Date>;
 }
 
-class EventModel
-    extends Model<EventAttributes, EventCreationAttributes>
-    implements EventAttributes
-{
-    public id!: number;
-    public title!: string;
-    public description!: string | null;
-    public date!: Date;
-    public createdBy!: number;
-    public categoryId!: number | null;
-}
-
-EventModel.init(
+Event.init(
     {
         id: {
-            type: DataTypes.INTEGER,
+            type: DataTypes.INTEGER.UNSIGNED,
             unique: true,
             autoIncrement: true,
             primaryKey: true,
             allowNull: false,
         },
         title: {
-            type: DataTypes.STRING,
+            type: DataTypes.STRING(128),
             allowNull: false,
         },
         description: {
-            type: DataTypes.STRING,
+            type: DataTypes.STRING(128),
             allowNull: true,
         },
         date: {
@@ -50,23 +55,21 @@ EventModel.init(
             allowNull: false,
         },
         createdBy: {
-            type: DataTypes.INTEGER,
+            type: DataTypes.INTEGER.UNSIGNED,
             allowNull: false,
             references: {
-                model: UserModel,
+                model: User,
                 key: 'id',
             },
             onDelete: 'CASCADE',
         },
-        categoryId: {
-            type: DataTypes.INTEGER,
-            allowNull: true,
-            references: {
-                model: CategoryModel,
-                key: 'id',
-            },
-            onDelete: 'SET NULL',
+        category: {
+            type: DataTypes.ENUM,
+            values: Object.values(Categories),
+            allowNull: false,
         },
+        createdAt: DataTypes.DATE,
+        updatedAt: DataTypes.DATE,
     },
     {
         sequelize,
@@ -75,7 +78,4 @@ EventModel.init(
     },
 );
 
-EventModel.belongsTo(UserModel, { foreignKey: 'createdBy' });
-EventModel.belongsTo(CategoryModel, { foreignKey: 'categoryId' });
-
-export default EventModel;
+export { Event, Categories };

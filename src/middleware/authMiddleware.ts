@@ -6,7 +6,7 @@ import {
     VerifiedCallback,
 } from 'passport-jwt';
 import UserModel from '../models/userModel';
-import config from '../config/config';
+import { config } from '../config/config';
 
 interface JwtPayload {
     id: string;

@@ -1,39 +1,42 @@
-import { DataTypes, Model, Optional } from 'sequelize';
+import {
+    Association,
+    CreationOptional,
+    DataTypes,
+    InferAttributes,
+    InferCreationAttributes,
+    Model,
+    NonAttribute,
+} from 'sequelize';
 import { sequelize } from '@config/db';
+import { Event } from '@models/eventModel';
 
-interface UserAttributes {
-    id: number;
-    name: string;
-    email: string;
-    password: string;
-    failedAttempts: number;
-    lockedUntil: Date | null;
+class User extends Model<
+    InferAttributes<User, { omit: 'events' }>,
+    InferCreationAttributes<User, { omit: 'events' }>
+> {
+    declare id: CreationOptional<number>;
+    declare name: string;
+    declare email: string;
+    declare password: string;
+    declare failedAttempts: number;
+    declare lockedUntil: Date | null;
+
+    declare createdAt: CreationOptional<Date>;
+    declare updatedAt: CreationOptional<Date>;
+
+    declare events?: NonAttribute<Event[]>;
+
+    declare static associations: {
+        events: Association<User, Event>;
+    };
 }
 
-interface UserCreationAttributes
-    extends Optional<UserAttributes, 'id' | 'lockedUntil'> {}
-
-class UserModel
-    extends Model<UserAttributes, UserCreationAttributes>
-    implements UserAttributes
-{
-    public id!: number;
-    public name!: string;
-    public email!: string;
-    public password!: string;
-    public failedAttempts!: number;
-    public lockedUntil!: Date | null;
-    createdAt?: Date;
-}
-
-UserModel.init(
+User.init(
     {
         id: {
-            type: DataTypes.INTEGER,
-            unique: true,
+            type: DataTypes.INTEGER.UNSIGNED,
             autoIncrement: true,
             primaryKey: true,
-            allowNull: false,
         },
         name: {
             type: DataTypes.STRING,
@@ -57,12 +60,19 @@ UserModel.init(
             type: DataTypes.DATE,
             allowNull: true,
         },
+        createdAt: DataTypes.DATE,
+        updatedAt: DataTypes.DATE,
     },
     {
-        sequelize,
-        tableName: 'app_users',
+        tableName: 'users',
         timestamps: true,
+        sequelize,
     },
 );
 
-export default UserModel;
+User.hasMany(Event, {
+    sourceKey: 'id',
+    foreignKey: 'createdBy',
+});
+
+export { User };

@@ -2,24 +2,6 @@ import { Request, Response, NextFunction } from 'express';
 import UserService from '@services/userService';
 
 class UserController {
-    /**
-     * @swagger
-     * /users:
-     *   get:
-     *     summary: Get a list of users
-     *     description: Fetch a list of all users in the system.
-     *     responses:
-     *       200:
-     *         description: A list of users
-     *         content:
-     *           application/json:
-     *             schema:
-     *               type: array
-     *               items:
-     *                 $ref: '#/components/schemas/User'
-     *       500:
-     *         description: Internal server error
-     */
     static async getUsers(
         req: Request,
         res: Response,
@@ -33,37 +15,6 @@ class UserController {
         }
     }
 
-    /**
-     * @swagger
-     * /users:
-     *   post:
-     *     summary: Create a new user
-     *     description: Create a new user by providing the necessary details (name and email).
-     *     requestBody:
-     *       required: true
-     *       content:
-     *         application/json:
-     *           schema:
-     *             type: object
-     *             properties:
-     *               name:
-     *                 type: string
-     *                 description: The name of the user
-     *               email:
-     *                 type: string
-     *                 description: The email of the user
-     *     responses:
-     *       201:
-     *         description: User created successfully
-     *         content:
-     *           application/json:
-     *             schema:
-     *               $ref: '#/components/schemas/User'
-     *       400:
-     *         description: Bad request, missing fields or user already exists
-     *       500:
-     *         description: Internal server error
-     */
     static async registration(
         req: Request,
         res: Response,

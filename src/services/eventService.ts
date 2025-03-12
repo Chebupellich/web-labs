@@ -76,14 +76,14 @@ class EventService {
         return newEvent;
     }
 
-    static async updateEvent(
-        eventId: string,
-        title: string,
-        description: string,
-        date: Date,
-        createdBy: number,
-        categoryId: number,
-    ) {
+    static async updateEvent(data: {
+        eventId: string;
+        title?: string; //todo sdelat normalno
+        description: string;
+        date: Date;
+        createdBy: number;
+        categoryId: number;
+    }) {
         const event = await EventModel.findOne({ where: { id: eventId } });
         if (!event) {
             throw new NotFoundError('requested event not found');

@@ -8,13 +8,13 @@ import config from '@config/config.js';
 class UserService {
     async getUsers() {
         const users = await UserModel.findAll();
-        const userDtos = users.map((user) => new UserDto(user));
+        const userDtos = users.map((user) => new UserDto(user)); //todo dto sequilze
 
         return userDtos;
     }
 
     async createUser(name: string, email: string, password: string) {
-        const existingUser = await UserModel.findOne({ where: { email } });
+        const existingUser = await UserModel.findOne({ where: { email } }); //todo hasOne
         if (existingUser) {
             return existingUser;
         }

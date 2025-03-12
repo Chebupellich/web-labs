@@ -1,7 +1,7 @@
 {
     "compilerOptions": {
-        "target": "ES6",
-        "module": "CommonJS",
+        "target": "ESNext",
+        "module": "ESNext",
         "rootDir": "./src",
         "baseUrl": "./src",
         "paths": {
@@ -34,15 +34,10 @@
             ]
         },
         "outDir": "./dist",
+        "moduleResolution": "Node",
         "esModuleInterop": true,
         "forceConsistentCasingInFileNames": true,
         "strict": true,
-        "skipLibCheck": true
-    },
-    "include": [
-        "src/**/*.ts"
-    ],
-    "exclude": [
-        "node_modules"
-    ]
+        "skipLibCheck": true,
+    }
 }

@@ -1,9 +1,9 @@
 import dotenv from 'dotenv';
-import { AppConfig } from './configInterfaces';
+import { CorsOptions } from 'cors';
 
 dotenv.config();
 
-const config: AppConfig = {
+export const config: AppConfig = {
     db: {
         host: process.env.DB_HOST as string,
         port: process.env.DB_PORT as string,
@@ -36,4 +36,38 @@ const config: AppConfig = {
     },
 };
 
-export default config;
+interface DbConfig {
+    host: string;
+    port: string;
+    user: string;
+    password: string;
+    dbDefaultName: string;
+    dbName: string;
+}
+
+interface RateLimiterConfig {
+    windowMs: number;
+    max: number;
+    message: string;
+    standardHeaders: boolean;
+    legacyHeaders: boolean;
+}
+
+interface ServerConfig {
+    port: string;
+    cors: CorsOptions;
+    rateLimiter: RateLimiterConfig;
+}
+
+interface AuthConfig {
+    jwtSecret: string;
+    jwtExpire: string;
+    maxFailedAttempts: number;
+    lockTime: number;
+}
+
+interface AppConfig {
+    db: DbConfig;
+    server: ServerConfig;
+    auth: AuthConfig;
+}

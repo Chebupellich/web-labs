@@ -1,11 +1,11 @@
 import express, { json, Express } from 'express';
 import { serve, setup } from 'swagger-ui-express';
-import rateLimit from 'express-rate-limit';
+import rateLimit from '../node_modules/express-rate-limit/dist/index';
 import cors from 'cors';
 import passport from 'passport';
 
 import { connectDB } from '@config/db.js';
-import config from '@config/config.js';
+import { config } from '@config/config.js';
 import eventRoutes from '@routes/eventRoutes.js';
 import userRoutes from '@routes/userRoutes.js';
 import { loggerMiddleware } from '@utils/logger.js';
