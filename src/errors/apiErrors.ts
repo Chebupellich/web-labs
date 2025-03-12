@@ -10,6 +10,7 @@ class CustomError extends Error {
 enum StatusCodes {
     BadRequest = 400,
     Unauthorized = 401,
+    Conflict = 409,
 }
 
 enum ErrorMessages {

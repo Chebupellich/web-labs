@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import UserService from '@services/userService';
+import { UserRequestDto } from '@dtos/userDto';
 
 class UserController {
     static async getUsers(
@@ -21,8 +22,9 @@ class UserController {
         next: NextFunction,
     ): Promise<void> {
         try {
-            const { name, email, password } = req.body;
-            if (!name || !email || !password) {
+            const userReq: UserRequestDto = req.body;
+
+            if (!userReq.name || !userReq.email || !userReq.password) {
                 res.status(400).json({
                     message:
                         'invalid input. required fields: name, email, password',
@@ -30,16 +32,12 @@ class UserController {
                 return;
             }
 
-            const existingUser = await UserService.createUser(
-                name,
-                email,
-                password,
-            );
-            if (existingUser) {
-                res.status(400).json({ message: 'user already exists' });
-                return;
-            }
-            res.status(201).json({ message: 'registration successful' });
+            const createdUser = await UserService.createUser(userReq);
+
+            res.status(201).json({
+                message: 'registration successful',
+                createdUser: createdUser,
+            });
         } catch (e) {
             next(e);
         }
@@ -51,16 +49,16 @@ class UserController {
         next: NextFunction,
     ): Promise<void> {
         try {
-            const { email, password } = req.body;
-            if (!email || !password) {
+            const userReq: UserRequestDto = req.body;
+            if (!userReq.email || !userReq.password) {
                 res.status(400).json({
                     message: 'invalid input. required fields: email, password',
                 });
                 return;
             }
 
-            const userData = await UserService.login(email, password);
-            res.status(200).json(userData);
+            const userData = await UserService.login(userReq);
+            res.status(200).json();
         } catch (e) {
             next(e);
         }

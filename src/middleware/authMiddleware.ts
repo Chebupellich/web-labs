@@ -5,7 +5,7 @@ import {
     StrategyOptions,
     VerifiedCallback,
 } from 'passport-jwt';
-import UserModel from '../models/userModel';
+import { User } from '@models/User';
 import { config } from '../config/config';
 
 interface JwtPayload {
@@ -21,7 +21,7 @@ const jwtStrategy = new JwtStrategy(
     options,
     async (jwtPayload: JwtPayload, done: VerifiedCallback) => {
         try {
-            const user = await UserModel.findByPk(jwtPayload.id);
+            const user = await User.findByPk(jwtPayload.id);
             if (!user) {
                 return done(null, false, { message: 'User not found' });
             }

@@ -1,56 +1,63 @@
-import { AuthorizationError, ForbiddenError } from '@errors/apiErrors.js';
-import UserModel from '@models/userModel';
 import bcrypt from 'bcrypt';
 import tokenService from './tokenService.js';
-import UserDto from '@dtos/userDto.js';
-import config from '@config/config.js';
+import { UserResponseDto, UserDto, UserRequestDto } from '@dtos/userDto.js';
+import { config } from '@config/config.js';
+import { User } from '@models/User';
+import { CustomError, ErrorMessages, StatusCodes } from '@errors/apiErrors';
 
 class UserService {
-    async getUsers() {
-        const users = await UserModel.findAll();
-        const userDtos = users.map((user) => new UserDto(user)); //todo dto sequilze
-
-        return userDtos;
+    async getUsers(): Promise<UserDto[]> {
+        return await User.findAll({
+            attributes: ['id', 'name', 'email'],
+        });
     }
 
-    async createUser(name: string, email: string, password: string) {
-        const existingUser = await UserModel.findOne({ where: { email } }); //todo hasOne
-        if (existingUser) {
-            return existingUser;
+    async createUser(userReq: UserRequestDto): Promise<UserDto> {
+        const hashedPassword: string = await bcrypt.hash(userReq.password, 10);
+        const [user, created]: [UserDto, boolean] = await User.findOrCreate({
+            where: { email: userReq.email },
+            defaults: {
+                name: userReq.name,
+                email: userReq.email,
+                password: hashedPassword,
+                failedAttempts: 0,
+            },
+            attributes: ['id', 'name', 'email'],
+        });
+
+        if (!created) {
+            throw new CustomError(StatusCodes.Conflict, 'User already exists');
         }
 
-        const hashedPassword = await bcrypt.hash(password, 10);
-
-        await UserModel.create({
-            name,
-            email,
-            password: hashedPassword,
-            failedAttempts: 0,
-        });
-        return null;
+        return user;
     }
 
-    async login(email: string, password: string) {
-        const existingUser = await UserModel.findOne({
-            where: { email: email },
+    async login(userReq: UserRequestDto): Promise<UserResponseDto> {
+        const existingUser: User | null = await User.findOne({
+            where: { email: userReq.email },
         });
         if (!existingUser) {
-            throw new AuthorizationError('Incorrect login or password');
+            throw new CustomError(
+                StatusCodes.Unauthorized,
+                ErrorMessages.Unauthorized,
+            );
         }
 
         if (
             existingUser.lockedUntil &&
             new Date() < new Date(existingUser.lockedUntil)
         ) {
-            throw new ForbiddenError(
+            throw new CustomError(
+                StatusCodes.Unauthorized,
                 `Account is locked. Try again after ${existingUser.lockedUntil}`,
             );
         }
 
         const isPasswordsEqual = await bcrypt.compare(
-            password,
+            userReq.password,
             existingUser.password,
         );
+
         if (!isPasswordsEqual) {
             existingUser.failedAttempts += 1;
 
@@ -62,11 +69,18 @@ class UserService {
             }
 
             await existingUser.save();
-            throw new AuthorizationError('Incorrect login or password');
+            throw new CustomError(
+                StatusCodes.Unauthorized,
+                ErrorMessages.Unauthorized,
+            );
         }
 
         const token = await tokenService.GenerateToken(existingUser.id);
-        const userDto = new UserDto(existingUser);
+        const userDto: UserDto = {
+            id: existingUser.id,
+            name: existingUser.name,
+            email: existingUser.email,
+        };
 
         return {
             user: userDto,

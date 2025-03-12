@@ -1,11 +1,16 @@
-import EventModel from '@models/eventModel';
-import UserModel from '@models/userModel';
+import { Event } from '@models/Event';
+import { User } from '@models/User';
 import CategoryModel from '@models/categoryModel';
-import { NotFoundError } from '@errors/apiErrors';
+import {
+    CustomError,
+    ErrorMessages,
+    StatusCodes,
+    StutusCodes,
+} from '@errors/apiErrors';
 
 class EventService {
     static async getEvents(categoryId: string | undefined) {
-        const events = await EventModel.findAll({
+        const events = await Event.findAll({
             where: categoryId ? { categoryId } : {},
             include: [
                 {
@@ -13,12 +18,11 @@ class EventService {
                     attributes: ['id', 'name'],
                 },
                 {
-                    model: UserModel,
+                    model: User,
                     attributes: ['id', 'name'],
                 },
             ],
         });
-
         return events;
     }
 
@@ -34,9 +38,10 @@ class EventService {
 
         if (eventTitle && eventTitle.trim() !== '') {
             filter.title = eventTitle;
+            throw new CustomError();
         }
 
-        const event = await EventModel.findOne({
+        const event = await Event.findOne({
             where: filter,
             include: [
                 {
@@ -65,7 +70,7 @@ class EventService {
             }
         }
 
-        const newEvent = await EventModel.create({
+        const newEvent = await Event.create({
             title,
             description,
             date,
@@ -84,7 +89,7 @@ class EventService {
         createdBy: number;
         categoryId: number;
     }) {
-        const event = await EventModel.findOne({ where: { id: eventId } });
+        const event = await Event.findOne({ where: { id: eventId } });
         if (!event) {
             throw new NotFoundError('requested event not found');
         }
@@ -109,7 +114,7 @@ class EventService {
     }
 
     static async deleteEvent(id: string) {
-        const event = await EventModel.findOne({ where: { id } });
+        const event = await Event.findOne({ where: { id } });
 
         if (!event) {
             return null;
