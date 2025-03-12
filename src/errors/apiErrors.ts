@@ -1,41 +1,21 @@
 class CustomError extends Error {
     statusCode: number;
 
-    constructor(message: string, statusCode: number) {
+    constructor(statusCode: number, message: string) {
         super(message);
-        this.name = this.constructor.name;
         this.statusCode = statusCode;
     }
 }
 
-class ValidationError extends CustomError {
-    constructor(message = 'Validation error') {
-        super(message, 400);
-    }
+enum StatusCodes {
+    BadRequest = 400,
+    Unauthorized = 401,
 }
 
-class AuthorizationError extends CustomError {
-    constructor(message = 'Unauthorized') {
-        super(message, 401);
-    }
+enum ErrorMessages {
+    ValidationError = 'Validation error',
+    Unauthorized = 'Unauthorized',
+    ForbiddenError = 'ForbiddenError',
 }
 
-class ForbiddenError extends CustomError {
-    constructor(message = 'Forbidden') {
-        super(message, 403);
-    }
-}
-
-class NotFoundError extends CustomError {
-    constructor(message = 'Not Found') {
-        super(message, 404);
-    }
-}
-
-export {
-    ValidationError,
-    AuthorizationError,
-    NotFoundError,
-    ForbiddenError,
-    CustomError,
-};
+export { CustomError, StatusCodes, ErrorMessages };

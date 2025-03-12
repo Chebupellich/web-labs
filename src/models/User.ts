@@ -8,7 +8,7 @@ import {
     NonAttribute,
 } from 'sequelize';
 import { sequelize } from '@config/db';
-import { Event } from '@models/eventModel';
+import { Event } from '@models/Event';
 
 class User extends Model<
     InferAttributes<User, { omit: 'events' }>,

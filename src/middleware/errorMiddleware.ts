@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import { CustomError } from '@errors/apiErrors';
 
 const ErrorHandler = (
-    err: any,
+    err: unknown,
     req: Request,
     res: Response,
     next: NextFunction,

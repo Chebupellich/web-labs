@@ -8,7 +8,7 @@ import {
     NonAttribute,
 } from 'sequelize';
 import { sequelize } from '@config/db';
-import { User } from './userModel.js';
+import { User } from './User';
 
 enum Categories {
     Concert = 'Concert',
