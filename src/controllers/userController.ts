@@ -1,6 +1,16 @@
 import { Request, Response, NextFunction } from 'express';
-import UserService from '@services/userService';
-import { UserRequestDto } from '@dtos/userDto';
+import UserService from '@services/userService.js';
+import { ReqUserDto } from '@dtos/userDto.js';
+import { z } from 'zod';
+
+const loginSchema = z.object({
+    email: z.string().email('Invalid email format'),
+    password: z.string().min(1, 'password required'),
+});
+const registrationSchema = loginSchema.extend({
+    password: z.string().min(4, 'Password must be at least 4 characters long'),
+    name: z.string().min(1, 'Name is required'),
+});
 
 class UserController {
     static async getUsers(
@@ -22,22 +32,12 @@ class UserController {
         next: NextFunction,
     ): Promise<void> {
         try {
-            const userReq: UserRequestDto = req.body;
-
-            if (!userReq.name || !userReq.email || !userReq.password) {
-                res.status(400).json({
-                    message:
-                        'invalid input. required fields: name, email, password',
-                });
-                return;
-            }
-
+            const userReq: Required<ReqUserDto> = registrationSchema.parse(
+                req.body,
+            );
             const createdUser = await UserService.createUser(userReq);
 
-            res.status(201).json({
-                message: 'registration successful',
-                createdUser: createdUser,
-            });
+            res.status(201).json({ createdUser: createdUser });
         } catch (e) {
             next(e);
         }
@@ -49,16 +49,10 @@ class UserController {
         next: NextFunction,
     ): Promise<void> {
         try {
-            const userReq: UserRequestDto = req.body;
-            if (!userReq.email || !userReq.password) {
-                res.status(400).json({
-                    message: 'invalid input. required fields: email, password',
-                });
-                return;
-            }
+            const userReq: ReqUserDto = loginSchema.parse(req.body);
+            const token = await UserService.login(userReq);
 
-            const userData = await UserService.login(userReq);
-            res.status(200).json();
+            res.status(200).json(token);
         } catch (e) {
             next(e);
         }

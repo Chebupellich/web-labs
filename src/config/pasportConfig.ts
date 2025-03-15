@@ -1,12 +1,12 @@
-import passport from 'passport';
 import {
     Strategy as JwtStrategy,
     ExtractJwt,
     StrategyOptions,
     VerifiedCallback,
 } from 'passport-jwt';
-import { User } from '@models/User';
-import { config } from '../config/config';
+import { User } from '@models/user.js';
+import passport from 'passport';
+import { appConfig } from './appConfig.js';
 
 interface JwtPayload {
     id: string;
@@ -14,7 +14,7 @@ interface JwtPayload {
 
 const options: StrategyOptions = {
     jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-    secretOrKey: config.auth.jwtSecret,
+    secretOrKey: appConfig.auth.jwtSecret,
 };
 
 const jwtStrategy = new JwtStrategy(

@@ -1,39 +1,41 @@
 import express, { json, Express } from 'express';
 import { serve, setup } from 'swagger-ui-express';
-import rateLimit from '../node_modules/express-rate-limit/dist/index';
-import cors from 'cors';
 import passport from 'passport';
 
-import { connectDB } from '@config/db.js';
-import { config } from '@config/config.js';
-import eventRoutes from '@routes/eventRoutes.js';
-import userRoutes from '@routes/userRoutes.js';
-import { loggerMiddleware } from '@utils/logger.js';
-import errorMiddleware from '@middleware/errorMiddleware.js';
+import { sequelize } from '@config/dbConfig.js';
+import { appConfig } from '@config/appConfig.js';
+import { passportConfig } from '@config/pasportConfig.js';
 import swaggerSpec from '@utils/swaggerConf.js';
-import { passportConfig } from '@middleware/authMiddleware.js';
-import authRouter from '@routes/authRouter';
+
+import { setupMiddlewares } from '@middleware/_middlewares.js';
+import { setupRoutes } from '@routes/_routes.js';
+import { setupAssociations } from '@models/associations.js';
+import errorMiddleware from '@middleware/errorMiddleware.js';
 
 const app: Express = express();
 passportConfig(passport);
 
 app.use('/api-docs', serve, setup(swaggerSpec));
-app.use(rateLimit(config.server.rateLimiter));
 app.use(json());
-app.use(cors(config.server.cors));
-app.use(passport.initialize());
-app.use(loggerMiddleware);
 
-app.use(authRouter);
-app.use(userRoutes);
-app.use(eventRoutes);
+setupMiddlewares(app);
+setupRoutes(app);
+
 app.use(errorMiddleware);
+
+const connectDB = async () => {
+    await sequelize.authenticate();
+    await sequelize.sync({ force: false });
+    await setupAssociations();
+
+    console.log('db Connected');
+};
 
 const start = async (): Promise<void> => {
     try {
         await connectDB();
-        app.listen(config.server.port, () =>
-            console.log(`Server run on ${config.server.port}`),
+        app.listen(appConfig.server.port, () =>
+            console.log(`Server run on ${appConfig.server.port}`),
         );
     } catch (e) {
         console.log(e);

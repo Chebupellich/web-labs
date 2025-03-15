@@ -7,8 +7,8 @@ import {
     Model,
     NonAttribute,
 } from 'sequelize';
-import { sequelize } from '@config/db';
-import { Event } from '@models/Event';
+import { sequelize } from '@config/dbConfig.js';
+import { Event } from '@models/event.js';
 
 class User extends Model<
     InferAttributes<User, { omit: 'events' }>,
@@ -34,7 +34,7 @@ class User extends Model<
 User.init(
     {
         id: {
-            type: DataTypes.INTEGER.UNSIGNED,
+            type: DataTypes.INTEGER,
             autoIncrement: true,
             primaryKey: true,
         },
@@ -69,10 +69,5 @@ User.init(
         sequelize,
     },
 );
-
-User.hasMany(Event, {
-    sourceKey: 'id',
-    foreignKey: 'createdBy',
-});
 
 export { User };

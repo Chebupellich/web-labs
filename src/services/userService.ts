@@ -1,9 +1,13 @@
 import bcrypt from 'bcrypt';
 import tokenService from './tokenService.js';
-import { UserResponseDto, UserDto, UserRequestDto } from '@dtos/userDto.js';
-import { config } from '@config/config.js';
-import { User } from '@models/User';
-import { CustomError, ErrorMessages, StatusCodes } from '@errors/apiErrors';
+import { ReqUserDto, UserDto } from '@dtos/userDto.js';
+import { appConfig } from '@config/appConfig.js';
+import { User } from '@models/user.js';
+import {
+    CustomError,
+    ErrorMessages,
+    StatusCodes,
+} from '@errors/customError.js';
 
 class UserService {
     async getUsers(): Promise<UserDto[]> {
@@ -12,7 +16,7 @@ class UserService {
         });
     }
 
-    async createUser(userReq: UserRequestDto): Promise<UserDto> {
+    async createUser(userReq: Required<ReqUserDto>): Promise<UserDto> {
         const hashedPassword: string = await bcrypt.hash(userReq.password, 10);
         const [user, created]: [UserDto, boolean] = await User.findOrCreate({
             where: { email: userReq.email },
@@ -32,7 +36,7 @@ class UserService {
         return user;
     }
 
-    async login(userReq: UserRequestDto): Promise<UserResponseDto> {
+    async login(userReq: ReqUserDto): Promise<string> {
         const existingUser: User | null = await User.findOne({
             where: { email: userReq.email },
         });
@@ -43,27 +47,29 @@ class UserService {
             );
         }
 
-        if (
-            existingUser.lockedUntil &&
-            new Date() < new Date(existingUser.lockedUntil)
-        ) {
-            throw new CustomError(
-                StatusCodes.Unauthorized,
-                `Account is locked. Try again after ${existingUser.lockedUntil}`,
-            );
-        }
-
         const isPasswordsEqual = await bcrypt.compare(
             userReq.password,
             existingUser.password,
         );
 
         if (!isPasswordsEqual) {
+            if (
+                existingUser.lockedUntil &&
+                new Date() < new Date(existingUser.lockedUntil)
+            ) {
+                throw new CustomError(
+                    StatusCodes.Unauthorized,
+                    `Account is locked. Try again after ${existingUser.lockedUntil}`,
+                );
+            }
+
             existingUser.failedAttempts += 1;
 
-            if (existingUser.failedAttempts >= config.auth.maxFailedAttempts) {
+            if (
+                existingUser.failedAttempts >= appConfig.auth.maxFailedAttempts
+            ) {
                 existingUser.lockedUntil = new Date(
-                    Date.now() + config.auth.lockTime,
+                    Date.now() + appConfig.auth.lockTime,
                 );
                 existingUser.failedAttempts = 0;
             }
@@ -75,17 +81,7 @@ class UserService {
             );
         }
 
-        const token = await tokenService.GenerateToken(existingUser.id);
-        const userDto: UserDto = {
-            id: existingUser.id,
-            name: existingUser.name,
-            email: existingUser.email,
-        };
-
-        return {
-            user: userDto,
-            token: token,
-        };
+        return await tokenService.generateToken(existingUser.id);
     }
 }
 

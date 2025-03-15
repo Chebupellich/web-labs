@@ -4,15 +4,10 @@ interface UserDto {
     email: string;
 }
 
-interface UserResponseDto {
-    user: UserDto;
-    token: string;
-}
-
-interface UserRequestDto {
-    name: string;
+interface ReqUserDto {
+    name?: string;
     email: string;
     password: string;
 }
 
-export { UserDto, UserResponseDto, UserRequestDto };
+export { UserDto, ReqUserDto };

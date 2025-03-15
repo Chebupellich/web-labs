@@ -3,7 +3,7 @@ import { CorsOptions } from 'cors';
 
 dotenv.config();
 
-export const config: AppConfig = {
+export const appConfig: AppConfig = {
     db: {
         host: process.env.DB_HOST as string,
         port: process.env.DB_PORT as string,
@@ -32,7 +32,7 @@ export const config: AppConfig = {
         jwtExpire: '1h',
 
         maxFailedAttempts: 5,
-        lockTime: 5 * 60 * 1000,
+        lockTime: 300000, // ms
     },
 };
 

@@ -1,10 +1,10 @@
 import { Sequelize } from 'sequelize';
-import { config } from './config.js';
+import { appConfig } from './appConfig.js';
 
 const sequelize = new Sequelize(
-    config.db.dbDefaultName,
-    config.db.user,
-    config.db.password,
+    appConfig.db.dbDefaultName,
+    appConfig.db.user,
+    appConfig.db.password,
     {
         dialect: 'postgres',
         logging: false,
@@ -21,11 +21,4 @@ const sequelize = new Sequelize(
     },
 );
 
-const connectDB = async () => {
-    await sequelize.authenticate();
-    await sequelize.sync({ force: false });
-
-    console.log('db Connected');
-};
-
-export { sequelize, connectDB };
+export { sequelize };

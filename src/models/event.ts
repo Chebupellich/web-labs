@@ -7,8 +7,8 @@ import {
     Model,
     NonAttribute,
 } from 'sequelize';
-import { sequelize } from '@config/db';
-import { User } from './User';
+import { sequelize } from '@config/dbConfig.js';
+import { User } from './user.js';
 
 enum Categories {
     Concert = 'Concert',
@@ -27,7 +27,7 @@ class Event extends Model<
     declare createdBy: ForeignKey<User['id']>;
     declare category: Categories;
 
-    declare owner?: NonAttribute<User>;
+    declare user?: NonAttribute<User>;
 
     declare createdAt: CreationOptional<Date>;
     declare updatedAt: CreationOptional<Date>;
@@ -36,7 +36,7 @@ class Event extends Model<
 Event.init(
     {
         id: {
-            type: DataTypes.INTEGER.UNSIGNED,
+            type: DataTypes.INTEGER,
             unique: true,
             autoIncrement: true,
             primaryKey: true,
@@ -47,7 +47,7 @@ Event.init(
             allowNull: false,
         },
         description: {
-            type: DataTypes.STRING(128),
+            type: DataTypes.TEXT,
             allowNull: true,
         },
         date: {
@@ -55,7 +55,7 @@ Event.init(
             allowNull: false,
         },
         createdBy: {
-            type: DataTypes.INTEGER.UNSIGNED,
+            type: DataTypes.INTEGER,
             allowNull: false,
             references: {
                 model: User,

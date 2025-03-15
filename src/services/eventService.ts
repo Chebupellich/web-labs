@@ -1,140 +1,101 @@
-import { Event } from '@models/Event';
-import { User } from '@models/User';
-import CategoryModel from '@models/categoryModel';
-import {
-    CustomError,
-    ErrorMessages,
-    StatusCodes,
-    StutusCodes,
-} from '@errors/apiErrors';
+import { Categories, Event } from '@models/event.js';
+import { User } from '@models/user.js';
+import { EventDto, ReqEventDto } from '@dtos/eventDto.js';
+import { CustomError, StatusCodes } from '@errors/customError.js';
+import eventMapper from '../mappers/eventMapper.js';
 
 class EventService {
-    static async getEvents(categoryId: string | undefined) {
-        const events = await Event.findAll({
-            where: categoryId ? { categoryId } : {},
+    static async getEvents(
+        category: Categories | undefined,
+    ): Promise<EventDto[]> {
+        const events: Event[] = await Event.findAll({
+            where: category ? { category: category } : {},
+            attributes: ['id', 'title', 'description', 'date', 'category'],
             include: [
-                {
-                    model: CategoryModel,
-                    attributes: ['id', 'name'],
-                },
                 {
                     model: User,
-                    attributes: ['id', 'name'],
+                    as: 'user',
+                    attributes: ['id', 'name', 'email'],
                 },
             ],
         });
-        return events;
+
+        return events.map(eventMapper.toDto);
     }
 
-    static async getEvent(
-        eventId: string | undefined,
-        eventTitle: string | undefined,
-    ) {
-        const filter: any = {};
-
-        if (eventId) {
-            filter.id = eventId;
-        }
-
-        if (eventTitle && eventTitle.trim() !== '') {
-            filter.title = eventTitle;
-            throw new CustomError();
-        }
-
-        const event = await Event.findOne({
-            where: filter,
+    static async getEvent(eventId: number): Promise<EventDto> {
+        const event: Event | null = await Event.findByPk(eventId, {
+            attributes: ['id', 'title', 'description', 'date', 'category'],
             include: [
                 {
-                    model: UserModel,
-                    attributes: ['id', 'name'],
+                    model: User,
+                    as: 'user',
+                    attributes: ['id', 'name', 'email'],
                 },
             ],
         });
 
-        return event;
+        if (!event) {
+            throw new CustomError(
+                StatusCodes.Conflict,
+                `event with id ${eventId} not found`,
+            );
+        }
+
+        return eventMapper.toDto(event);
     }
 
-    static async createEvent(
-        title: string,
-        description: string,
-        date: Date,
-        createdBy: number,
-        categoryId: number,
-    ) {
-        if (categoryId) {
-            const category = await CategoryModel.findOne({
-                where: { id: categoryId },
-            });
-            if (!category) {
-                throw new NotFoundError(`category ${categoryId} not exists`);
+    static async createEvent(event: ReqEventDto): Promise<EventDto> {
+        const user = await User.findByPk(event.createdBy);
+        if (!user) {
+            throw new CustomError(
+                StatusCodes.Conflict,
+                `user with id ${event.createdBy} not found`,
+            );
+        }
+
+        const createdEvent = await Event.create(event);
+        return eventMapper.toDto(createdEvent);
+    }
+
+    static async updateEvent(
+        id: number,
+        event: Partial<ReqEventDto>,
+    ): Promise<EventDto> {
+        const findEvent = await Event.findByPk(id);
+
+        if (event.createdBy) {
+            const user = await User.findByPk(event.createdBy);
+            if (!user) {
+                throw new CustomError(
+                    StatusCodes.Conflict,
+                    `user with id ${event.createdBy} not found`,
+                );
             }
         }
 
-        const newEvent = await Event.create({
-            title,
-            description,
-            date,
-            createdBy,
-            categoryId,
-        });
-
-        return newEvent;
-    }
-
-    static async updateEvent(data: {
-        eventId: string;
-        title?: string; //todo sdelat normalno
-        description: string;
-        date: Date;
-        createdBy: number;
-        categoryId: number;
-    }) {
-        const event = await Event.findOne({ where: { id: eventId } });
-        if (!event) {
-            throw new NotFoundError('requested event not found');
+        if (!findEvent) {
+            throw new CustomError(
+                StatusCodes.Conflict,
+                `event with id ${id} not found`,
+            );
         }
 
-        if (categoryId) {
-            const category = await CategoryModel.findOne({
-                where: { id: categoryId },
-            });
-            if (!category) {
-                throw new NotFoundError(`category ${categoryId} not exists`);
-            }
-        }
-
-        const eventResp = event.update({
-            title: title ?? event.title,
-            description: description ?? event.description,
-            date: date ?? event.date,
-            createdBy: createdBy ?? event.createdBy,
-            categoryId: categoryId ?? event.categoryId,
-        });
-        return eventResp;
+        const updatedEvent = await findEvent.update(event);
+        return eventMapper.toDto(updatedEvent);
     }
 
-    static async deleteEvent(id: string) {
-        const event = await Event.findOne({ where: { id } });
+    static async deleteEvent(id: number) {
+        const event = await Event.findByPk(id);
 
         if (!event) {
-            return null;
+            throw new CustomError(
+                StatusCodes.Conflict,
+                `event with id ${id} not found`,
+            );
         }
 
-        const deleteRes = await event.destroy();
-        return deleteRes;
-    }
-
-    static async getCategories(categoryId: number | undefined) {
-        const events = await CategoryModel.findAll({
-            where: categoryId ? { id: categoryId } : {},
-        });
-        return events;
-    }
-
-    static async createCategory(name: string) {
-        const newEvent = await CategoryModel.create({ name });
-
-        return newEvent;
+        return await event.destroy();
     }
 }
 

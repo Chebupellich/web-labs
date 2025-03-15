@@ -1,5 +1,36 @@
 import { Request, Response, NextFunction } from 'express';
-import EventService from '@services/eventService';
+import EventService from '@services/eventService.js';
+import { Categories } from '@models/event.js';
+import { ReqEventDto } from '@dtos/eventDto.js';
+import { z } from 'zod';
+
+const createEventSchema = z.object({
+    title: z.string().min(1, 'title is required'),
+    description: z.string().optional(),
+    date: z
+        .string()
+        .refine((date) => !isNaN(Date.parse(date)), {
+            message: 'invalid date format',
+        })
+        .transform((val) => new Date(val)),
+    createdBy: z.number().int().positive('createdBy must be a valid user ID'),
+    category: z.nativeEnum(Categories, {
+        errorMap: () => ({ message: 'invalid category' }),
+    }),
+});
+const updateEventSchema = createEventSchema.partial();
+const eventIdSchema = z.coerce
+    .number()
+    .int('eventId must be an integer')
+    .positive('eventId must be a positive integer');
+const categorySchema = z.union([
+    z.undefined(),
+    z.nativeEnum(Categories, {
+        errorMap: () => ({
+            message: 'invalid category',
+        }),
+    }),
+]);
 
 class EventController {
     static async getEvents(
@@ -8,9 +39,8 @@ class EventController {
         next: NextFunction,
     ): Promise<void> {
         try {
-            const { categoryId }: { categoryId?: string } = req.query;
-
-            const events = await EventService.getEvents(categoryId);
+            const category = categorySchema.parse(req.body.category);
+            const events = await EventService.getEvents(category);
             res.status(200).json(events);
         } catch (e) {
             next(e);
@@ -23,17 +53,8 @@ class EventController {
         next: NextFunction,
     ): Promise<void> {
         try {
-            const { eventId, eventTitle } = req.body;
-
-            if (!eventId && !eventTitle) {
-                res.status(400).json({
-                    message: 'eventId or eventTitle required',
-                });
-                return;
-            }
-
-            const event = await EventService.getEvent(eventId, eventTitle);
-
+            const eventId = eventIdSchema.parse(req.body.eventId);
+            const event = await EventService.getEvent(eventId);
             res.status(200).json(event);
         } catch (e) {
             next(e);
@@ -46,33 +67,9 @@ class EventController {
         next: NextFunction,
     ): Promise<void> {
         try {
-            const { title, description, date, createdBy, categoryId } =
-                req.body;
+            const parsedEvent: ReqEventDto = createEventSchema.parse(req.body);
+            const event = await EventService.createEvent(parsedEvent);
 
-            if (!title || !date || !createdBy) {
-                res.status(400).json({
-                    message:
-                        'required fields required: title, date, created by, category',
-                });
-                return;
-            }
-
-            const eventDate = new Date(date);
-            if (isNaN(eventDate.getTime())) {
-                res.status(400).json({
-                    message:
-                        'invalid date format, required YYYY-MM-DDTHH:mm:ss.sssZ ',
-                });
-                return;
-            }
-
-            const event = await EventService.createEvent(
-                title,
-                description,
-                date,
-                createdBy,
-                categoryId,
-            );
             res.status(201).json(event);
         } catch (e) {
             next(e);
@@ -85,37 +82,12 @@ class EventController {
         next: NextFunction,
     ): Promise<void> {
         try {
-            const { eventId } = req.params;
-            const { title, description, date, createdBy, categoryId } =
-                req.body;
-
-            if (!eventId) {
-                res.status(400).json({ message: 'eventId required' });
-                return;
-            }
-
-            let eventDate: Date = new Date();
-
-            if (date) {
-                eventDate = new Date(date);
-                if (isNaN(eventDate.getTime())) {
-                    res.status(400).json({
-                        message:
-                            'invalid date format, required YYYY-MM-DDTHH:mm:ss.sssZ ',
-                    });
-                    return;
-                }
-            }
-
-            const event = await EventService.updateEvent(
-                eventId,
-                title,
-                description,
-                eventDate,
-                createdBy,
-                categoryId,
+            const eventId = eventIdSchema.parse(req.params.id);
+            const parsedEvent: Partial<ReqEventDto> = updateEventSchema.parse(
+                req.body,
             );
 
+            const event = await EventService.updateEvent(eventId, parsedEvent);
             res.status(200).json(event);
         } catch (e) {
             next(e);
@@ -128,47 +100,10 @@ class EventController {
         next: NextFunction,
     ): Promise<void> {
         try {
-            const { eventId } = req.params;
-
-            const result = await EventService.deleteEvent(eventId);
-            if (!result) {
-                res.status(400).json({ message: `event ${eventId} not found` });
-                return;
-            }
+            const eventId = eventIdSchema.parse(req.params.id);
+            await EventService.deleteEvent(eventId);
 
             res.status(200).send();
-        } catch (e) {
-            next(e);
-        }
-    }
-
-    static async getCategories(
-        req: Request,
-        res: Response,
-        next: NextFunction,
-    ): Promise<void> {
-        try {
-            const { categoryId }: { categoryId?: number } = req.query;
-
-            const events = await EventService.getCategories(categoryId);
-            res.status(200).json(events);
-        } catch (e) {
-            next(e);
-        }
-    }
-
-    static async createCategory(
-        req: Request,
-        res: Response,
-        next: NextFunction,
-    ): Promise<void> {
-        try {
-            const { name } = req.body;
-            if (!name && name.trim() == '') {
-                res.status(400).json({ message: `title required` });
-            }
-            const result = await EventService.createCategory(name);
-            res.status(200).json(result);
         } catch (e) {
             next(e);
         }
