@@ -1,6 +1,6 @@
 import globals from 'globals';
 import pluginJs from '@eslint/js';
-import tseslint from 'typescript-eslint';
+import tslint from 'typescript-eslint';
 import eslintConfigPrettier from 'eslint-config-prettier';
 import eslintPluginPrettier from 'eslint-plugin-prettier';
 
@@ -14,11 +14,11 @@ export default [
                 ...globals.browser,
                 ...globals.node,
             },
-            parser: tseslint.parser,
+            parser: tslint.parser,
         },
     },
     pluginJs.configs.recommended,
-    ...tseslint.configs.recommended,
+    ...tslint.configs.recommended,
     eslintConfigPrettier,
     {
         plugins: {
@@ -29,7 +29,6 @@ export default [
             '@typescript-eslint/no-unused-vars': ['warn'],
             '@typescript-eslint/explicit-function-return-type': 'off',
             '@typescript-eslint/no-empty-object-type': 'off',
-            '@typescript-eslint/no-explicit-any': 'off',
         },
     },
 ];

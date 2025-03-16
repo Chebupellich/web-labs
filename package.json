@@ -1,11 +1,12 @@
 {
-  "type": "commonjs",
+  "type": "module",
   "name": "backend",
   "version": "1.0.0",
   "main": "app.js",
   "scripts": {
-    "dev": "node -r ./tsconfig-paths-bootstrap.js dist/app.js",
-    "build": "tsc",
+    "start": "tsc && tsc-alias && nodemon dist/app.js",
+    "dev": "node dist/app.js",
+    "build": "tsc && tsc-alias",
     "lint": "eslint . --ext .ts --fix",
     "format": "prettier --write .",
     "check": "tsc --noEmit && eslint . --ext .ts",
@@ -34,17 +35,18 @@
     "sequelize": "^6.37.6",
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^5.0.1",
-    "winston": "^3.17.0"
+    "tsc-alias": "^1.8.11",
+    "winston": "^3.17.0",
+    "zod": "^3.24.2"
   },
   "devDependencies": {
     "@eslint/js": "^9.21.0",
     "@types/bcrypt": "^5.0.2",
     "@types/cors": "^2.8.17",
     "@types/express": "^5.0.0",
-    "@types/node": "^22.13.9",
+    "@types/node": "^22.13.10",
     "@types/passport": "^1.0.17",
     "@types/passport-jwt": "^4.0.1",
-    "@types/sequelize": "^4.28.20",
     "@types/swagger-jsdoc": "^6.0.4",
     "@types/swagger-ui-express": "^4.1.8",
     "@typescript-eslint/eslint-plugin": "^8.26.0",
