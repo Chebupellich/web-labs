@@ -12,9 +12,12 @@
     "format": "prettier --write \"src/**/*.{js,jsx,ts,tsx,css,scss,json,md}\""
   },
   "dependencies": {
+    "@react-three/drei": "^10.0.5",
+    "@react-three/fiber": "^9.1.0",
     "@types/node": "^22.13.13",
     "axios": "^1.8.3",
     "classnames": "^2.5.1",
+    "leva": "^0.10.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-router-dom": "^7.3.0",
