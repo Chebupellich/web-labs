@@ -1,8 +1,7 @@
 // @ts-nocheck
 
-import React, { useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useGLTF, useAnimations } from '@react-three/drei';
-import { useEffect } from 'react';
 
 const Amogus = (props) => {
     const group = useRef();
@@ -10,22 +9,22 @@ const Amogus = (props) => {
     const { actions } = useAnimations(animations, group);
 
     useEffect(() => {
-        // Печать всех анимаций, содержащихся в модели
-        console.log('Список анимаций в модели:', animations);
-
-        // Если нужно получить имя анимации
-        animations.forEach((anim, index) => {
-            console.log(`Анимация ${index + 1}: ${anim.name}`);
-        });
-
-        // Например, проиграть анимацию с именем 'Walk'
-        if (!actions) {
-            actions['ArmatureAction']?.play(); // Замените 'Walk' на имя нужной анимации
+        if (materials.personnage) {
+            materials.personnage.color.set('red');
+            materials['Material.001'].color.set('red');
         }
-    }, [animations, actions]);
+    }, []);
+
+    useEffect(() => {
+        if (props.runAnimation) {
+            actions['ArmatureAction']?.play();
+        } else {
+            actions['ArmatureAction']?.stop();
+        }
+    }, [animations, actions, props.runAnimation]);
 
     return (
-        <group ref={group} {...props} dispose={null}>
+        <group ref={group} {...props}>
             <group name="Scene">
                 <group name="Armature">
                     <group name="Cube">

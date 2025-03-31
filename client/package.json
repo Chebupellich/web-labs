@@ -14,10 +14,13 @@
   "dependencies": {
     "@react-three/drei": "^10.0.5",
     "@react-three/fiber": "^9.1.0",
+    "@react-three/postprocessing": "^3.0.4",
     "@types/node": "^22.13.13",
     "axios": "^1.8.3",
     "classnames": "^2.5.1",
+    "gsap": "^3.12.7",
     "leva": "^0.10.0",
+    "motion": "^12.6.2",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-router-dom": "^7.3.0",
