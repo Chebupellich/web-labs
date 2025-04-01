@@ -26,25 +26,28 @@ const Amogus = (props) => {
     return (
         <group ref={group} {...props}>
             <group name="Scene">
-                <group name="Armature">
+                <group name="Armature" castShadow>
                     <group name="Cube">
                         <skinnedMesh
                             name="Cube001"
                             geometry={nodes.Cube001.geometry}
                             material={materials.personnage}
                             skeleton={nodes.Cube001.skeleton}
+                            castShadow
                         />
                         <skinnedMesh
                             name="Cube001_1"
                             geometry={nodes.Cube001_1.geometry}
                             material={materials.ecran}
                             skeleton={nodes.Cube001_1.skeleton}
+                            castShadow
                         />
                         <skinnedMesh
                             name="Cube001_2"
                             geometry={nodes.Cube001_2.geometry}
                             material={materials.pourtour}
                             skeleton={nodes.Cube001_2.skeleton}
+                            castShadow
                         />
                     </group>
                     <skinnedMesh
@@ -52,6 +55,7 @@ const Amogus = (props) => {
                         geometry={nodes.Cube002.geometry}
                         material={materials['Material.001']}
                         skeleton={nodes.Cube002.skeleton}
+                        castShadow
                     />
                     <primitive object={nodes.Bone} />
                     <primitive object={nodes.Bone001} />

@@ -1,9 +1,9 @@
-import Scene from '@components/Scene';
+import Scene from '@components/canvas/Scene';
 
 const App = () => {
     return (
         <>
-            <div>Hi</div>
+            <div style={{ zIndex: 1 }}>Hi</div>
             <Scene />
         </>
     );

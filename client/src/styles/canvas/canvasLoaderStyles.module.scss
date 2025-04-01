@@ -6,15 +6,21 @@
 }
 
 .progress {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+
   font-family: Montserrat-Medium, sans-serif;
   font-weight: bold;
-  font-size: 20px;
+  font-size: 18px;
+
+  margin: 10px;
 }
 
 .progressBarWrapper {
   position: relative;
 
-  height: 2rem;
+  height: 0.75rem;
   width: 15rem;
   border-radius: 2rem;
 
