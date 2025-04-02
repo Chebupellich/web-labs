@@ -2,18 +2,23 @@ import { Suspense, useEffect, useState } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { Center } from '@react-three/drei';
 
-import Amogus from '@components/models/Amogus.tsx';
-import CanvasLoader from '@components/canvas/CanvasLoader.tsx';
+import Amogus from '@assets/models/Amogus.tsx';
+import CanvasLoader from '@pages/canvas/CanvasLoader.tsx';
 import * as THREE from 'three';
-import { Lights, Shadows } from '@components/canvas/Lights.tsx';
+import { Lights, Shadows } from '@pages/canvas/Lights.tsx';
 import styles from '@styles/canvas/mainCanva.module.scss';
 
-const Scene = () => {
+interface Props {
+    onLoaded: () => void;
+}
+
+const Scene = ({ onLoaded }: Props) => {
     const [isRunning, setIsRunning] = useState(true);
 
     useEffect(() => {
         const timer = setTimeout(() => {
             setIsRunning(false);
+            onLoaded();
         }, 2750);
         return () => clearTimeout(timer);
     }, []);
@@ -28,7 +33,7 @@ const Scene = () => {
                 ),
                 0.01
             );
-            state.camera.lookAt(0, 0, 0);
+            state.camera.lookAt(0, 0.1, 0);
         });
         return <></>;
     }
@@ -56,7 +61,12 @@ const Scene = () => {
     return (
         <div className={styles.canvas}>
             <CanvasLoader />
-            <Canvas camera={{ position: [0, 2, 4] }} shadows>
+            <Canvas
+                camera={{ position: [0, 2, 4] }}
+                shadows
+                dpr={[1, 2]}
+                eventSource={document.body} // или конкретный DOM-элемент
+            >
                 <Suspense fallback={null}>
                     <color attach={'background'} args={['#fce1e1']} />
                     <Lights />

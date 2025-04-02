@@ -20,7 +20,7 @@ const CanvasLoader = () => {
         if (progress >= 100) {
             const timer = setTimeout(() => {
                 setIsLoaded(true);
-            }, 5000);
+            }, 1000);
             return () => clearTimeout(timer);
         }
     }, [active]);

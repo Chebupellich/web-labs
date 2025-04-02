@@ -20,14 +20,17 @@
 .progressBarWrapper {
   position: relative;
 
-  height: 0.75rem;
+  height: 1rem;
   width: 15rem;
   border-radius: 2rem;
 
-  padding: 0.5rem;
+  padding: 0.25rem;
 
   background-color: #fce1e1;
   outline: 2px solid #9c8c8c;
+
+  box-sizing: border-box;
+
 
   .progressBar {
     display: flex;
@@ -35,7 +38,7 @@
     align-items: center;
     justify-content: center;
 
-    min-width: 2rem;
+    min-width: 5%;
     height: 100%;
 
     border-radius: 1rem;

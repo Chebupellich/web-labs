@@ -45,6 +45,12 @@
       ],
       "@assets/*": [
         "src/assets/*"
+      ],
+      "@dtos/*": [
+        "src/dtos/*"
+      ],
+      "@contexts/*": [
+        "src/contexts/*"
       ]
     }
   },

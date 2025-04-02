@@ -1,0 +1,17 @@
+:root {
+    --main-bg-color: #201f1f;
+    --secondary-bg-color: #1b1919;
+    --outline-color: #706969;
+
+    --active-color: #ef4b74;
+    --active-hover-color: #67b1d2;
+
+    --main-text-color: #ffffff;
+    --secondary-text-color: #646c91;
+
+    --main-bg-color-op: rgba(112, 105, 105, 0.5);
+}
+
+:root[data-theme="dark"]{
+    --main-bg: #dd3434;
+}
