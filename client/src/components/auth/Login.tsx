@@ -1,26 +1,49 @@
 import { AnimatePresence, motion } from 'framer-motion';
 import styles from './authFormStyles.module.scss';
-import { useState } from 'react';
+import React, { useContext, useState } from 'react';
+import { AuthContext } from '@contexts/AuthContext.tsx';
+import { loginUser } from '@api/authService.ts';
+import { useNavigate } from 'react-router-dom';
 
-const Login = () => {
+interface Props {
+    onLogin: () => void;
+}
+
+const Login = ({ onLogin }: Props) => {
+    const { login } = useContext(AuthContext)!;
     const [formData, setFormData] = useState({
         email: '',
         password: '',
-        remember: false,
     });
+    const navigate = useNavigate();
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const { name, value, type, checked } = e.target;
+        const { name, value } = e.target;
         setFormData((prev) => ({
             ...prev,
-            [name]: type === 'checkbox' ? checked : value,
+            [name]: value,
         }));
     };
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         console.log('Submit:', formData);
-        // Здесь логика авторизации
+
+        try {
+            const resp = await loginUser(formData);
+            console.log(resp);
+
+            // context
+            login(resp.user, resp.accessToken);
+            onLogin();
+
+            const timer = setTimeout(() => {
+                navigate('/events');
+            }, 1000);
+            return () => clearTimeout(timer);
+        } catch (error) {
+            console.log(error);
+        }
     };
 
     return (
@@ -62,7 +85,6 @@ const Login = () => {
                             onChange={handleChange}
                             required
                             placeholder="••••••••"
-                            minLength={8}
                         />
                     </div>
 

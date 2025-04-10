@@ -8,6 +8,7 @@ import {
     ErrorMessages,
     StatusCodes,
 } from '@errors/customError.js';
+import UserMapper from '../mappers/userMapper.js';
 
 class UserService {
     async getUsers(): Promise<UserDto[]> {
@@ -18,7 +19,7 @@ class UserService {
 
     async createUser(userReq: Required<ReqUserDto>): Promise<UserDto> {
         const hashedPassword: string = await bcrypt.hash(userReq.password, 10);
-        const [user, created]: [UserDto, boolean] = await User.findOrCreate({
+        const [user, created]: [User, boolean] = await User.findOrCreate({
             where: { email: userReq.email },
             defaults: {
                 name: userReq.name,
@@ -33,10 +34,12 @@ class UserService {
             throw new CustomError(StatusCodes.Conflict, 'User already exists');
         }
 
-        return user;
+        return UserMapper.toDto(user);
     }
 
-    async login(userReq: ReqUserDto): Promise<string> {
+    async login(
+        userReq: ReqUserDto,
+    ): Promise<{ token: string; user: UserDto }> {
         const existingUser: User | null = await User.findOne({
             where: { email: userReq.email },
         });
@@ -81,7 +84,14 @@ class UserService {
             );
         }
 
-        return await tokenService.generateToken(existingUser.id);
+        const token = await tokenService.generateToken(existingUser.id);
+        const user = {
+            id: existingUser.id,
+            name: existingUser.name,
+            email: existingUser.email,
+        };
+
+        return { token, user };
     }
 }
 

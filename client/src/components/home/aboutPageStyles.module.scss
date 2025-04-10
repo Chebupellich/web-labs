@@ -1,0 +1,37 @@
+@use '@styles/variables' as *;
+
+.aboutWrap {
+  position: relative;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  padding: 0.25rem 1rem;
+  max-width: 100%;
+
+  .appInfo {
+    margin: 0 1rem;
+    max-width: 30rem;
+    word-break: break-word;
+  }
+
+  .bottomContent {
+    display: flex;
+    flex-direction: row;
+
+    margin: 2rem 1rem;
+    gap: 2rem;
+
+    img {
+      max-width: 13rem;
+      border-radius: 2rem;
+    }
+
+    p {
+      margin: 0 1rem;
+      max-width: 14rem;
+      word-break: break-word;
+      font-family: $font-family-light;
+    }
+  }
+}

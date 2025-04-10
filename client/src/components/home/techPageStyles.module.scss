@@ -1,0 +1,79 @@
+@use '@styles/variables' as *;
+
+.techWrap {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  padding: 0.25rem 1rem;
+  max-width: 100%;
+
+
+  &.techWrap:last-child {
+    margin-bottom: 2rem;
+  }
+
+  .techHeader {
+    margin: 0.5rem 2rem;
+    font-size: 2rem;
+    font-family: $font-family-bold;
+  }
+
+  .techContentWrap {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 2rem;
+    max-width: 30rem;
+    margin: 0.5rem 2rem;
+    padding: 1rem 2rem;
+    border-radius: 1rem;
+
+    background: var(--secondary-bg-color);
+
+    .techImages {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+
+      width: 4rem;
+      height: 4rem;
+      font-size: 3rem;
+
+      transition: transform 0.2s ease;
+
+      &:hover {
+        transform: scale(1.2);
+      }
+
+      svg {
+        fill: black;
+        color: black;
+      }
+
+      a {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        height: 100%;
+        width: 100%;
+
+        text-decoration: none;
+        color: inherit;
+
+        &:hover {
+          text-decoration: none;
+          color: inherit;
+        }
+
+        &:active {
+          text-decoration: none;
+          color: inherit;
+        }
+      }
+    }
+  }
+}

@@ -37,7 +37,7 @@ class UserController {
             );
             const createdUser = await UserService.createUser(userReq);
 
-            res.status(201).json({ createdUser: createdUser });
+            res.status(201).json(createdUser);
         } catch (e) {
             next(e);
         }
@@ -50,9 +50,12 @@ class UserController {
     ): Promise<void> {
         try {
             const userReq: ReqUserDto = loginSchema.parse(req.body);
-            const token = await UserService.login(userReq);
+            const userData = await UserService.login(userReq);
 
-            res.status(200).json(token);
+            res.status(200).json({
+                accessToken: userData.token,
+                user: userData.user,
+            });
         } catch (e) {
             next(e);
         }

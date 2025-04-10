@@ -1,4 +1,4 @@
-import { useContext, useEffect, useRef, useState } from 'react';
+import { useContext, useRef, useState } from 'react';
 import { AuthContext } from '@contexts/AuthContext.tsx';
 import { useLocation, useNavigate } from 'react-router-dom';
 
@@ -12,7 +12,6 @@ import styles from './headerStyles.module.scss';
 
 const Header = () => {
     const [isSettingsOpen, setIsSettingsOpen] = useState(false);
-    const [accountAccess, setAccountAccess] = useState(false);
 
     const cogRef = useRef<HTMLImageElement>(null);
 
@@ -20,12 +19,6 @@ const Header = () => {
 
     const navigate = useNavigate();
     const location = useLocation();
-
-    useEffect(() => {
-        if (user) {
-            setAccountAccess(true);
-        }
-    }, [user]);
 
     const handleSettings = () => {
         setIsSettingsOpen((prev) => !prev);
@@ -37,7 +30,7 @@ const Header = () => {
     };
 
     const handleUserClick = () => {
-        if (!accountAccess) {
+        if (!user) {
             if (
                 !location.pathname.includes('/auth/login') &&
                 !location.pathname.includes('/auth/registration')
@@ -57,7 +50,7 @@ const Header = () => {
                 <button className={styles.button} onClick={handleUserClick}>
                     <img
                         className={styles.button}
-                        src={accountAccess ? eventsIcon : eventsLockedIcon}
+                        src={user ? eventsIcon : eventsLockedIcon}
                         alt={'settings'}
                     />
                 </button>
@@ -65,7 +58,7 @@ const Header = () => {
                 <button className={styles.button} onClick={handleUserClick}>
                     <img
                         className={styles.button}
-                        src={accountAccess ? userLogo : userLogoLocked}
+                        src={user ? userLogo : userLogoLocked}
                         alt={'settings'}
                     />
                 </button>

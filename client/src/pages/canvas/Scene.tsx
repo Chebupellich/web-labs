@@ -1,4 +1,4 @@
-import { Suspense, useEffect, useState } from 'react';
+import { Suspense, useEffect, useRef, useState } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { Center } from '@react-three/drei';
 
@@ -7,6 +7,7 @@ import CanvasLoader from '@pages/canvas/CanvasLoader.tsx';
 import * as THREE from 'three';
 import { Lights, Shadows } from '@pages/canvas/Lights.tsx';
 import styles from '@styles/canvas/mainCanva.module.scss';
+import { Shrek } from '@assets/models/ShrekBust.tsx';
 
 interface Props {
     onLoaded: () => void;
@@ -27,7 +28,7 @@ const Scene = ({ onLoaded }: Props) => {
         useFrame((state) => {
             state.camera.position.lerp(
                 vec.set(
-                    1 + state.pointer.x * 0.3,
+                    1 - state.pointer.x * 0.3,
                     0.9 - state.pointer.y * 0.2,
                     3
                 ),
@@ -57,15 +58,20 @@ const Scene = ({ onLoaded }: Props) => {
     //         </EffectComposer>
     //     );
     // }
-
+    const canvasContainerRef = useRef<HTMLDivElement>(null);
+    // TODO: check loader numbers, it looks like a 83.3333
     return (
-        <div className={styles.canvas}>
+        <div
+            ref={canvasContainerRef}
+            className={styles.canvas}
+            id="canvas-container"
+        >
             <CanvasLoader />
             <Canvas
                 camera={{ position: [0, 2, 4] }}
                 shadows
                 dpr={[1, 2]}
-                eventSource={document.body} // или конкретный DOM-элемент
+                eventSource={document.body}
             >
                 <Suspense fallback={null}>
                     <color attach={'background'} args={['#fce1e1']} />
@@ -78,6 +84,13 @@ const Scene = ({ onLoaded }: Props) => {
                                 rotation={[0, -0.18, 0]}
                                 scale={0.015}
                                 runAnimation={isRunning}
+                            />
+                        </Center>
+                        <Center top position={[-2, 0, 0.5]}>
+                            <Shrek
+                                position={[-2, 0, -1.5]}
+                                rotation={[0, -0.8, 0]}
+                                scale={0.75}
                             />
                         </Center>
 

@@ -10,8 +10,8 @@
 
 
 .logo {
-  width: 5rem;
-  height: 2.5rem;
+  width: 8rem;
+  height: 4rem;
   margin: 0.5rem 1rem;
 }
 
@@ -22,6 +22,18 @@
   gap: 1rem;
 
   margin: 0 1rem;
+
+  .button {
+    all: unset;
+    cursor: pointer;
+
+    width: 2rem;
+    height: 2rem;
+
+    .cog {
+      transition: transform 0.5s ease;
+    }
+  }
 
   .underline {
     position: absolute;
@@ -34,18 +46,5 @@
     z-index: 1;
   }
 }
-
-.button {
-  all: unset;
-  cursor: pointer;
-
-  width: 1.5rem;
-  height: 1.5rem;
-
-  .cog {
-    transition: transform 0.5s ease;
-  }
-}
-
 
 

@@ -2,8 +2,6 @@
 @use "variables.scss" as *;
 
 body {
-    @include fluid-text(18, 16);
-
     font-family: $font-family-base, sans-serif;
     color: $color-text;
     background-color: $color-background;
@@ -14,7 +12,7 @@ body {
 }
 
 html {
-    font-size: 18px;
+    @include fluid-text(16, 10);
 }
 
 a,

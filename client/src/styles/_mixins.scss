@@ -1,8 +1,12 @@
 @use 'variables' as *;
+@use 'sass:math';
 
-@mixin fluid-text($max: 48, $min: 16) {
-    font-size: clamp(#{$min}px, #{calc($max / 1440) * 100}vw, #{$max}px);
-}
+@mixin fluid-text($max: 10, $min: 2) {
+    font-size: clamp(
+            #{math.div($min, 16)}rem,
+            calc(min(#{math.div($max, 1440) * 100}vw, #{math.div($max, 720) * 100}vh)),
+            #{math.div($max, 16)}rem
+    );}
 
 @mixin reset-link {
     color: inherit;

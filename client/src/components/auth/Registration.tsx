@@ -1,27 +1,39 @@
 import { AnimatePresence, motion } from 'framer-motion';
 import styles from './authFormStyles.module.scss';
-import { useState } from 'react';
+import React, { useContext, useState } from 'react';
+import { registerUser } from '@api/authService.ts';
+import { AuthContext } from '@contexts/AuthContext.tsx';
 
 const Registration = () => {
+    const { logout } = useContext(AuthContext)!;
+
     const [formData, setFormData] = useState({
         name: '',
         email: '',
         password: '',
-        remember: false,
     });
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const { name, value, type, checked } = e.target;
+        const { name, value } = e.target;
         setFormData((prev) => ({
             ...prev,
-            [name]: type === 'checkbox' ? checked : value,
+            [name]: value,
         }));
     };
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         console.log('Submit:', formData);
-        // Здесь логика авторизации
+
+        try {
+            const resp = await registerUser(formData);
+            console.log(resp);
+
+            logout();
+            console.log('REG KEKW');
+        } catch (error) {
+            console.log(error);
+        }
     };
 
     return (
@@ -77,7 +89,6 @@ const Registration = () => {
                             onChange={handleChange}
                             required
                             placeholder="••••••••"
-                            minLength={8}
                         />
                     </div>
 
