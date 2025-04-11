@@ -3,6 +3,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import Tech from '@components/home/Tech.tsx';
 import styles from './homeStyles.module.scss';
 import About from '@components/home/About.tsx';
+import Clown from '@components/home/Clown.tsx';
 
 interface Tab {
     index: number;
@@ -28,7 +29,7 @@ const tabs: Tab[] = [
         index: 2,
         text: 'Clown',
         color: '#e3367b',
-        component: <Tech color="#e3367b" />,
+        component: <Clown color="#e3367b" />,
     },
 ];
 // STOP

@@ -2,11 +2,15 @@
 @use 'sass:math';
 
 @mixin fluid-text($max: 10, $min: 2) {
+    $min-rem: math.div($min, 16);
+    $max-rem: math.div($max, 16);
+
     font-size: clamp(
-            #{math.div($min, 16)}rem,
-            calc(min(#{math.div($max, 1440) * 100}vw, #{math.div($max, 720) * 100}vh)),
-            #{math.div($max, 16)}rem
-    );}
+            #{$min-rem}rem,
+            calc(#{$min-rem}rem + (#{$max} - #{$min}) * (100vw - 720px) / (1920 - 320)),
+            #{$max-rem}rem
+    );
+}
 
 @mixin reset-link {
     color: inherit;
