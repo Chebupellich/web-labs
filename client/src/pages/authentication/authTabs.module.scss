@@ -2,20 +2,19 @@
 
 .container {
   width: fit-content;
-  min-width: 15rem;
+  min-width: 20rem;
 
   height: fit-content;
-  border-radius: 10px;
+  border-radius: 1rem;
   background: var(--main-bg-color);
   overflow: hidden;
   box-shadow: 0 1px 1px hsl(0deg 0% 0% / 0.075), 0 2px 2px hsl(0deg 0% 0% / 0.075), 0 4px 4px hsl(0deg 0% 0% / 0.075), 0 8px 8px hsl(0deg 0% 0% / 0.075), 0 16px 16px hsl(0deg 0% 0% / 0.075), 0 2px 2px hsl(0deg 0% 0% / 0.075), 0 4px 4px hsl(0deg 0% 0% / 0.075), 0 8px 8px hsl(0deg 0% 0% / 0.075), 0 16px 16px hsl(0deg 0% 0% / 0.075);
   display: flex;
   flex-direction: column;
 
-  font-family: Montserrat-SemiBold sans-serif;
+  font-family: $font-family-accent;
   outline: 1px solid var(--outline-color);
   outline-offset: -1px;
-
 }
 
 .nav {
@@ -49,7 +48,7 @@
   user-select: none;
 
   width: 100%;
-  padding: 10px 15px;
+  padding: 1rem 1.5rem;
   position: relative;
   cursor: pointer;
 

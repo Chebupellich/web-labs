@@ -1,0 +1,67 @@
+@use '@styles/variables' as *;
+
+.wrap {
+  position: absolute;
+  bottom: 2rem;
+  width: 75%;
+  height: 15rem;
+
+  left: 50%;
+  transform: translateX(-50%);
+
+  border-radius: 2rem;
+  padding: 1rem;
+
+  color: var(--text-color);
+  background-color: var(--accent-bg);
+  border: 1px solid var(--border-color);
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+
+  z-index: 10000;
+
+  .innerWrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    width: 100%;
+    height: 100%;
+
+    border-radius: 1rem;
+    border: 1px dashed var(--icon-bg);
+
+    transition: background-color 0.2s ease, border 0.2s ease;
+
+    .deleteIcon {
+      height: 2rem;
+      width: 2rem;
+      fill: var(--icon-color);
+      transition: transform 0.3s ease;
+    }
+
+    // TODO: rename
+    .text {
+      font-size: 1.2rem;
+      font-family: $font-family-bold;
+
+      color: var(--text-color);
+      transition: all 0.3s ease;
+    }
+
+    &.overTarget {
+      background-color: var(--main-bg);
+      border: 1px dashed var(--selection-color);
+
+      .text {
+        color: var(--selection-color);
+        font-size: 1.5rem;
+      }
+
+      .deleteIcon {
+        fill: var(--selection-color);
+        transform: scale(1.2);
+      }
+    }
+  }
+}

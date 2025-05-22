@@ -2,7 +2,7 @@
 @use "variables.scss" as *;
 
 body {
-    font-family: $font-family-base, sans-serif;
+    font-family: "Segoe UI", sans-serif;
     color: $color-text;
     background-color: $color-background;
 
@@ -13,6 +13,10 @@ body {
 
 html {
     @include fluid-text(24, 6);
+}
+
+html, body, #root {
+    height: 100%;
 }
 
 a,
@@ -33,10 +37,18 @@ h1, h2, h3, h4 {
 
 h1 {
     @include fluid-text(60, 43);
+    font-size: $font-size-large;
+    font-family: "Segoe UI", sans-serif;
+    font-weight: 700;
+    color: var(--text-accent)
 }
 
 h2 {
     @include fluid-text(40, 36);
+    font-size: $font-size-big;
+    font-family: "Segoe UI", sans-serif;
+    font-weight: 600;
+    color: var(--text-subhead)
 }
 
 h3 {

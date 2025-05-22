@@ -60,13 +60,18 @@
         max-height: 5rem;
         max-width: 5rem;
 
-        transition: transform 0.2s ease;
+        outline: 1px solid var(--outline-color);
+        border-radius: 50%;
+        outline-offset: 0.5rem;
+
+        transition: transform 0.2s ease-in-out,
+        outline-offset 0.4s ease;
+        animation: pulse-outline 0.6s ease-in-out infinite;
 
         &:hover {
           transform: scale(1.2);
         }
       }
-
     }
 
     p {
@@ -75,5 +80,14 @@
       word-break: break-word;
       font-family: $font-family-light;
     }
+  }
+}
+
+@keyframes pulse-outline {
+  0%, 100% {
+    outline-offset: 0.3rem;
+  }
+  50% {
+    outline-offset: 0.5rem;
   }
 }

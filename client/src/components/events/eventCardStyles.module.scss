@@ -1,0 +1,85 @@
+@use '@styles/uiElements' as *;
+
+.eventCardWrap {
+  display: flex;
+  flex-direction: column;
+
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+
+  max-height: fit-content;
+
+  padding: 0.3rem 1rem 1rem 1rem;
+  border-radius: 0.5rem;
+  background: var(--accent-bg);
+  border: 1px solid var(--border-color);
+
+  transition: opacity 0.2s ease, border 0.2s ease;
+
+  &:hover {
+    border: 1px solid var(--active-color);
+  }
+
+  .cardHeader {
+    color: var(--text-accent);
+    font-size: 2rem;
+    font-weight: 700;
+
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .description {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+
+    line-height: 1.5rem;
+    height: calc(1.75rem * 3);
+    width: 100%;
+    max-width: 100%;
+
+    background-color: var(--lighter-bg);
+    margin: 0.25rem 0 1rem 0;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+
+    overflow: hidden;
+    text-overflow: ellipsis;
+
+    @include nested-text;
+    font-size: 1.2rem;
+    font-weight: 400;
+  }
+
+  .cardInfo {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+
+    align-items: center;
+
+    margin-top: 0.5rem;
+
+    .userInfo {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+
+      gap: 0.5rem;
+
+      .username {
+        @include nested-text;
+        color: var(--text-color);
+      }
+    }
+
+    .cardDate {
+      @include nested-text;
+      color: var(--text-color);
+      font-size: 1.2rem;
+    }
+  }
+}

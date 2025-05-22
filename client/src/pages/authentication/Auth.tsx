@@ -16,8 +16,7 @@ const Auth = () => {
     const toggleVisibility = () => {
         setIsVisible((prev) => !prev);
     };
-
-    const [tabs, setTabs] = useState<Tab[]>([
+    const [tabs] = useState<Tab[]>([
         {
             label: 'Login',
             link: '/auth/login',

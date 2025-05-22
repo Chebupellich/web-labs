@@ -121,7 +121,7 @@ const Home = () => {
             <div className={styles.tabsWrap}>
                 <div className={styles.tabs}>
                     {tabs.map((tab) => (
-                        <motion.button
+                        <motion.div
                             key={tab.text}
                             className={styles.buttons}
                             onClick={() => setActiveTabIndex(tab.index)}
@@ -155,7 +155,7 @@ const Home = () => {
                                     style={{ background: tab.color }}
                                 />
                             )}
-                        </motion.button>
+                        </motion.div>
                     ))}
                 </div>
             </div>

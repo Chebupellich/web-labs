@@ -58,7 +58,7 @@ const CanvasLoader = () => {
                         }}
                     >
                         <p className={loaderStyles.progress}>
-                            {displayProgress}%
+                            {displayProgress.toFixed(0)}%
                         </p>
                         <div className={loaderStyles.progressBarWrapper}>
                             <motion.div

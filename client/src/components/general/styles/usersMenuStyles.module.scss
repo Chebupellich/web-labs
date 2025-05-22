@@ -1,0 +1,31 @@
+.usersContainer {
+  width: 20rem;
+  height: 100%;
+
+  background-color: var(--accent-bg);
+  border-right: 1px solid var(--lighter-bg);
+  padding: 0.75rem 1rem 1rem 1rem;
+
+  position: relative;
+  flex-shrink: 0;
+  overflow: hidden;
+
+  .usersWrap {
+    .usersHeader {
+      position: relative;
+      margin-bottom: 1rem;
+      font-size: 2rem;
+
+      &::after {
+        content: "";
+        position: absolute;
+        left: 0;
+        bottom: -0.5rem;
+        width: 100%;
+        height: 1px;
+        background-color: var(--border-color);
+        border-radius: 1px;
+      }
+    }
+  }
+}
