@@ -1,0 +1,85 @@
+@use '@styles/uiElements' as *;
+
+.filterWrap {
+  position: absolute;
+
+  top: calc(100% + 0.5rem);
+  left: 100%;
+  right: auto;
+  transform: translateX(-50%);
+  width: 13rem;
+
+  z-index: 1000;
+
+  &.responsive {
+    width: 80vw;
+    max-width: 25rem;
+  }
+
+  .headerWrap {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+
+    .resetIcon {
+      cursor: pointer;
+
+      width: 2.5rem;
+      height: 2.5rem;
+
+      fill: var(--icon-color);
+      padding: 0.25rem;
+      border-radius: 0.5rem;
+
+      transition: background-color 0.1s ease, fill 0.1s ease;
+
+      &:hover {
+        background-color: var(--icon-bg);
+        fill: var(--selection-color);
+      }
+    }
+  }
+
+  .buttonWrap {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 1rem;
+    align-items: center;
+
+    margin-top: 2rem;
+
+    .filterButton {
+      all: unset;
+      cursor: pointer;
+      box-sizing: border-box;
+      overflow: hidden;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      gap: 0.5rem;
+
+      font-size: 1.5rem;
+      background-color: var(--accent-bg);
+      color: #fff;
+      border: 1px solid var(--border-color);
+
+      padding: 0.5rem 1rem;
+      border-radius: 0.5rem;
+
+      .icon {
+        width: 1.5rem;
+        height: 1.5rem;
+
+        margin-top: 0.25rem;
+      }
+    }
+
+    .active {
+      background-color: var(--lighter-bg);
+      color: #fff;
+      border: 1px solid var(--border-color);
+    }
+  }
+}

@@ -1,0 +1,227 @@
+@use '@styles/uiElements' as *;
+
+.eventMenuContainer {
+  width: 30rem;
+  height: 100%;
+
+  background-color: var(--accent-bg);
+  border-left: 1px solid var(--lighter-bg);
+  padding: 0.75rem 1rem 1rem 1rem;
+
+  position: relative;
+  flex-shrink: 0;
+  overflow: hidden;
+
+  .eventWrap {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+
+    .eventHeader {
+      position: relative;
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+
+      color: var(--text-accent);
+
+      @include after-underline;
+
+      .headerIconGroup {
+        display: flex;
+        flex-direction: row;
+        align-items: flex-start;
+
+        margin-top: 0.5rem;
+        gap: 0.5rem;
+
+        svg {
+          width: 2rem;
+          height: 2rem;
+          padding: 0.25rem;
+          border-radius: 0.25rem;
+
+          fill: var(--active-color);
+
+          cursor: pointer;
+          transition: background-color .1s ease, fill .1s ease;
+
+          &:hover {
+            fill: var(--selection-color);
+            background-color: var(--icon-bg);
+          }
+        }
+      }
+    }
+
+    .menuHeader {
+      @include subheading-text;
+      margin-left: 0.5rem;
+      font-size: 1.6rem;
+    }
+
+    .contentWrap {
+      margin-top: 1rem;
+
+      @include scrollBar;
+
+      .category {
+        display: flex;
+        flex-wrap: wrap;
+        flex-direction: row;
+        align-items: center;
+        gap: 0.5rem;
+        margin-bottom: 0.5rem;
+      }
+
+      .descriptionWrap {
+        display: flex;
+        flex-direction: column;
+
+        margin-top: 1rem;
+
+        color: var(--text-nested);
+
+        .descriptionBlock {
+          background-color: var(--lighter-bg);
+          margin-top: 0.5rem;
+          padding: 0.5rem 1rem;
+          border-radius: 0.5rem;
+        }
+      }
+
+      .dateWrap {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+
+        gap: 1rem;
+
+        margin-top: 1rem;
+
+        .dateInput {
+          appearance: none;
+          user-select: none;
+
+          background-color: var(--lighter-bg);
+          color: var(--text-nested);
+          font-size: 1.4rem;
+          font-weight: 500;
+
+          padding: 0.5rem 1rem;
+          border: none;
+          border-radius: 0.5rem;
+
+          cursor: pointer;
+
+          transition: background-color 0.1s ease, color 0.1s ease;
+
+          &:focus {
+            outline: none;
+            background-color: var(--lighter-bg);
+          }
+
+          &::-webkit-calendar-picker-indicator {
+            filter: invert(60%);
+            cursor: pointer;
+          }
+        }
+      }
+
+      .userInfo {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: flex-start;
+        margin-top: 1rem;
+        margin-bottom: 1.5rem;
+
+        @include after-underline;
+        &::after {
+          bottom: -1rem;
+        }
+
+        .createdByBlock {
+          display: flex;
+          flex-direction: row;
+          align-items: center;
+
+          margin-top: 0.5rem;
+
+          background-color: var(--lighter-bg);
+          padding: 0.5rem;
+          border-radius: 0.5rem;
+
+          .username {
+            @include subheading-text;
+            color: var(--text-nested);
+            font-size: 1.6rem;
+
+            margin-left: 0.5rem;
+          }
+        }
+      }
+
+      .footerButtons {
+        all: unset;
+        cursor: pointer;
+
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        gap: 0.25rem;
+
+        border-radius: 0.5rem;
+        padding: 0.25rem;
+
+        color: var(--lighter-bg);
+        fill: var(--lighter-bg);
+        pointer-events: none;
+
+        transition: background-color .1s ease, fill .1s ease, color .1s ease;
+
+        .saveText {
+          font-size: 1.2rem;
+          font-weight: 600;
+          margin-left: 0.25rem;
+        }
+
+        .saveIcon {
+          height: 2rem;
+          width: 2rem;
+          padding: 0.25rem;
+
+          display: flex;
+          justify-content: center;
+          align-items: center;
+        }
+      }
+      .activeSave {
+        pointer-events: all;
+        color: var(--text-accent);
+        fill: var(--active-color);
+
+        &:hover {
+          background-color: var(--icon-bg);
+          color: var(--selection-color);
+          fill: var(--selection-color);
+        }
+      }
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .eventMenuContainer {
+    width: 100% !important;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+
+    z-index: 9;
+    background-color: var(--main-bg);
+  }
+}

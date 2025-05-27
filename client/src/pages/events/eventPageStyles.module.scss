@@ -1,0 +1,105 @@
+@use '@styles/uiElements' as *;
+
+.eventContainer {
+  position: relative;
+  display: flex;
+  flex-direction: row;
+
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+
+  background-color: var(--main-bg);
+
+  .eventCenterWrap {
+    position: relative;
+
+    width: 100%;
+    height: 100%;
+
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+
+      width: 100%;
+      height: 1rem;
+
+      pointer-events: none;
+      z-index: 10;
+
+      background: linear-gradient(to bottom, var(--main-bg), transparent 1rem);
+
+    }
+
+    .eventWrap {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(20rem, 1fr));
+      grid-template-rows: auto;
+      grid-auto-rows: min-content;
+      gap: 1rem;
+
+      max-height: 100%;
+
+      flex: 1;
+      align-items: center;
+      padding: 1rem;
+      background-color: var(--main-bg);
+
+      @include scrollBar;
+
+      .addEventWrap {
+        cursor: pointer;
+        height: 100%;
+
+        .addEvent {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+
+          width: 100%;
+          height: 100%;
+          min-width: 0;
+
+          border-radius: 0.5rem;
+          background: var(--accent-bg);
+          border: 1px solid var(--border-color);
+
+          transition: opacity 0.2s ease, border 0.2s ease;
+
+          &:hover {
+            border: 1px solid var(--active-color);
+          }
+          .plusIcon {
+            fill: var(--active-color);
+
+            width: 4rem;
+            height: 4rem;
+          }
+        }
+      }
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .usersMenuMobileOverCenter {
+    position: absolute;
+    top: 0;
+    left: 0;
+
+    width: 100%;
+    height: 100%;
+
+    z-index: 10;
+    background-color: var(--main-bg);
+  }
+
+  .eventCenterWrap {
+    position: relative;
+    z-index: 1;
+  }
+}
+

@@ -1,0 +1,81 @@
+@use '@styles/uiElements' as *;
+
+.usersContainer {
+  width: 20rem;
+  height: 100%;
+
+  background-color: var(--accent-bg);
+  border-right: 1px solid var(--lighter-bg);
+  padding: 0.75rem 1rem 1rem 1rem;
+
+  position: relative;
+  flex-shrink: 0;
+  overflow: hidden;
+
+  .usersWrap {
+    .usersHeader {
+      position: relative;
+      margin-bottom: 1rem;
+      font-size: 2rem;
+
+      @include after-underline;
+    }
+
+    .usersMenuWrap{
+      position: relative;
+      @include scrollBar;
+      max-height: calc(100vh - 12rem);
+      overflow-y: auto;
+
+      .userBlock {
+        position: relative;
+
+        @include accent-text;
+        font-size: 1.25rem;
+
+        white-space: normal;
+        overflow-wrap: break-word;
+        margin-bottom: 1rem;
+
+        @include after-underline;
+      }
+    }
+
+    .mainUserBlock {
+      position: relative;
+
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
+
+      margin-bottom: 1rem;
+      @include after-underline;
+
+      .username {
+        @include subheading-text;
+        font-size: 1.5rem;
+      }
+
+      .currUserIcon {
+        width: 2rem;
+        height: 2rem;
+
+        fill: var(--text-subhead);
+      }
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .usersContainer {
+    width: 100% !important;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+
+    z-index: 10;
+    background-color: var(--main-bg);
+  }
+}

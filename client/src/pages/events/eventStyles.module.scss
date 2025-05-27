@@ -1,0 +1,57 @@
+@use '@styles/variables' as *;
+
+.container {
+    position: relative;
+
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 1rem;
+
+    font-family: $font-family-heading;
+
+    overflow: hidden;
+
+    max-height: 80vh;
+    width: 80%;
+
+    padding: 2rem;
+    margin: 2rem 0 1rem auto;
+
+    overflow-y: auto;
+
+    scrollbar-width: thin;
+    scrollbar-color: var(--active-color) transparent;
+    scroll-behavior: smooth;
+
+    &::-webkit-scrollbar {
+        width: 1.25rem;
+    }
+
+    &::-webkit-scrollbar-track {
+        background: none;
+        border-radius: 1rem;
+        margin-block: 3rem;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background: var(--active-color);
+        border-radius: 1rem;
+        border: 0.25rem solid transparent;
+        background-clip: content-box;
+        transition: background-color 1s ease;
+        &:hover {
+            background-color: var(--active-hover-color);
+        }
+    }
+
+    mask-image: linear-gradient(
+                    to bottom,
+                    transparent 0%,
+                    black 1rem,
+                    black calc(100% - 1rem),
+                    transparent 100%
+    );
+}

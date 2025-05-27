@@ -1,0 +1,96 @@
+@use "_mixins.scss" as *;
+@use "variables.scss" as *;
+
+body {
+    font-family: "Segoe UI", sans-serif;
+    color: $color-text;
+    background-color: $color-background;
+
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+
+
+html {
+    @include fluid-text(24, 6);
+}
+
+html, body, #root {
+    height: 100%;
+}
+
+a,
+button,
+input,
+textarea,
+svg * {
+    transition-duration: $transition-duration;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    margin: 0;
+}
+
+h1, h2, h3, h4 {
+    font-weight: 500;
+}
+
+h1 {
+    @include fluid-text(60, 43);
+    font-size: $font-size-large;
+    font-family: "Segoe UI", sans-serif;
+    font-weight: 700;
+    color: var(--text-accent)
+}
+
+h2 {
+    @include fluid-text(40, 36);
+    font-size: $font-size-big;
+    font-family: "Segoe UI", sans-serif;
+    font-weight: 600;
+    color: var(--text-subhead)
+}
+
+h3 {
+    @include fluid-text(30, 26);
+}
+
+h4 {
+    @include fluid-text(24, 20);
+}
+
+h5 {
+    @include fluid-text(18, 14);
+}
+
+h6 {
+    @include fluid-text(12, 10);
+}
+
+a {
+    color: $color-primary;
+    text-decoration: none;
+    cursor: pointer;
+
+    @include hover {
+        color:  $color-accent;
+    }
+}
+
+ul {
+    font-size: 22px;
+}
+
+ol li {
+    font-size: 18px;
+    margin-left: 20px;
+}
+
+
+@media (max-width: 768px) {
+    html {
+        font-size: 0.8rem;
+    }
+}

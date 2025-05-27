@@ -1,0 +1,21 @@
+@use '@styles/uiElements' as *;
+
+.themeToggle {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+
+  margin-top: 1rem;
+
+  .iconWrapper {
+    width: 1.5rem;
+    height: 1.5rem;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    fill: var(--active-color);
+  }
+}

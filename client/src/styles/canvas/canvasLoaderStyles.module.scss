@@ -1,0 +1,48 @@
+.loader {
+  font-family: Montserrat-Medium, sans-serif;
+  font-size: 20px;
+  color: black;
+  margin: 40px;
+}
+
+.progress {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+
+  font-family: Montserrat-Medium, sans-serif;
+  font-weight: bold;
+  font-size: 18px;
+
+  margin: 10px;
+}
+
+.progressBarWrapper {
+  position: relative;
+
+  height: 1rem;
+  width: 15rem;
+  border-radius: 2rem;
+
+  padding: 0.25rem;
+
+  background-color: #fce1e1;
+  outline: 2px solid #9c8c8c;
+
+  box-sizing: border-box;
+
+
+  .progressBar {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    min-width: 5%;
+    height: 100%;
+
+    border-radius: 1rem;
+
+    background-color: #f50f72;
+  }
+}

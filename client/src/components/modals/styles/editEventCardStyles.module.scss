@@ -1,0 +1,151 @@
+@use '@styles/variables' as *;
+@use '@styles/mixins' as *;
+@use '@styles/uiElements' as *;
+
+.wrap {
+  position: absolute;
+
+  left: 0;
+  top: 9rem;
+  height: 75%;
+  min-width: 30vw;
+  max-width: 50vw;
+  @include general-card;
+
+  .eventName {
+    position: relative;
+
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+
+
+    margin-bottom: 2rem;
+
+    @include block-underline;
+
+    .titleInput {
+      all: unset;
+      font-size: 50rem;
+
+      width: 25ch;
+      overflow: clip;
+      background-color: var(--accent-color);
+      cursor: pointer;
+    }
+
+    .headerIconGroup {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      gap: 0.5rem;
+
+      margin-top: 1.25rem;
+
+      img {
+        @include icon;
+      }
+    }
+  }
+
+  .contentWrap {
+    width: 100%;
+    height: fit-content;
+
+    .category {
+      display: flex;
+      flex-wrap: wrap;
+      flex-direction: row;
+      align-items: center;
+      gap: 1rem;
+
+      margin-bottom: 1rem;
+      .categoryHeader {
+        font-size: 2rem;
+        font-family: $font-family-accent;
+        margin-right: 1rem;
+      }
+
+      .categorySelect {
+        border: 2px solid #ddd;
+        background: #eee;
+        padding: 0.5rem;
+        transition: 0.4s;
+
+        font-size: $font-size-small;
+
+        .categoryIcon {
+          margin-right: 0.5rem;
+        }
+        .categoryName {
+          font-size: 2rem;
+          font-family: $font-family-light
+        }
+
+        option {
+          display: flex;
+          justify-content: flex-start;
+          gap: 20px;
+
+          border: 2px solid #ddd;
+          background: #eee;
+          padding: 10px;
+          transition: 0.4s;
+        }
+
+        &:hover, &:focus {
+          background: #ddd;
+        }
+      }
+
+      img {
+        width: 2rem;
+        height: 2rem;
+
+        filter: var(--invert-value);
+      }
+    }
+
+    .description {
+      margin-bottom: 2rem;
+
+      h2 {
+        font-size: 2rem;
+        font-family: $font-family-accent;
+        margin-bottom: 0.25rem;
+      }
+    }
+
+    .date {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      gap: 2rem;
+
+      margin-bottom: 1.5rem;
+
+      h2 {
+        font-size: 2rem;
+        font-family: $font-family-accent;
+      }
+      p {
+        font-size: 2rem;
+        font-family: $font-family-light;
+      }
+    }
+
+    .userInfo {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      gap: 1rem;
+
+      p {
+        font-size: 1.5rem;
+        font-family: $font-family-heading;
+      }
+    }
+  }
+}

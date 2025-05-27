@@ -1,0 +1,85 @@
+@use 'variables' as *;
+@use 'sass:math';
+
+@mixin fluid-text($max: 10, $min: 2) {
+    $min-rem: math.div($min, 16);
+    $max-rem: math.div($max, 16);
+
+    font-size: clamp(
+            #{$min-rem}rem,
+            calc(#{$min-rem}rem + (#{$max} - #{$min}) * (100vw - 720px) / (1920 - 320)),
+            #{$max-rem}rem
+    );
+}
+
+@mixin reset-link {
+    color: inherit;
+
+    &,
+    &:hover {
+        text-decoration: none;
+    }
+}
+
+@mixin reset-button {
+    padding: 0;
+    background-color: transparent;
+    border: none;
+    border-radius: 0;
+}
+
+@mixin flex-center($isInline: false) {
+    @if $isInline {
+        display: inline-flex;
+    } @else {
+        display: flex;
+    }
+
+    justify-content: center;
+    align-items: center;
+}
+
+@mixin abs-center {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    translate: -50% -50%;
+}
+
+@mixin square($size) {
+    width: #{$size}px;
+    aspect-ratio: 1;
+}
+
+@mixin rounded($size) {
+    @include square($size);
+
+    border-radius: 50% !important;
+}
+
+@mixin hide {
+    position: absolute !important;
+    width: 1px !important;
+    height: 1px !important;
+    margin: -1px !important;
+    border: 0 !important;
+    padding: 0 !important;
+    white-space: nowrap !important;
+    clip-path: inset(100%) !important;
+    clip: rect(0 0 0 0) !important;
+    overflow: hidden !important;
+}
+
+@mixin hover {
+    @media (hover: hover) {
+        &:hover {
+            @content;
+        }
+    }
+
+    @media (hover: none) {
+        &:active {
+            @content;
+        }
+    }
+}
