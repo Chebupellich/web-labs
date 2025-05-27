@@ -1,60 +1,48 @@
-import Scene from '@pages/canvas/Scene';
 import { BrowserRouter, Routes, Route } from 'react-router';
 import Auth from '@pages/authentication/Auth.tsx';
-import { useState } from 'react';
 import { Navigate } from 'react-router-dom';
 import Home from '@pages/homePage/Home.tsx';
 import Header from '@pages/header/Header.tsx';
-import Events from '@pages/events/Events.tsx';
 import Profile from '@components/profile/Profile.tsx';
-import Test from '@pages/test.tsx';
 import EventPage from '@pages/events/EventPage.tsx';
 import styles from './app.module.scss';
-import { UsersMenuProvider } from '@contexts/UsersMenuContext.tsx';
+import { UsersMenuProvider } from '@contexts/providers/UsersMenuProvider.tsx';
+import NotFoundPage from '@pages/notFound/NotFoundPage.tsx';
+import { ToastContainer } from 'react-toastify';
 
 const App = () => {
-    const [isSceneLoaded, setIsSceneLoaded] = useState(true);
-
     return (
         <div className={styles.rootWrap}>
-            {/*<Scene onLoaded={() => setIsSceneLoaded(true)} />*/}
             <BrowserRouter>
                 <UsersMenuProvider>
-                    {isSceneLoaded && <Header />}
+                    {<Header />}
 
                     <Routes>
-                        <Route
-                            path="/"
-                            element={isSceneLoaded ? <Home /> : null}
-                        />
+                        <Route path="/" element={<Home />} />
                         <Route
                             path="/auth"
                             element={<Navigate to="/auth/login" />}
                         />
-                        <Route
-                            path="/auth/login"
-                            element={isSceneLoaded ? <Auth /> : null}
-                        />
-                        <Route
-                            path="/auth/registration"
-                            element={isSceneLoaded ? <Auth /> : null}
-                        />
-                        <Route
-                            path="/events"
-                            element={isSceneLoaded ? <EventPage /> : null}
-                        />
-
-                        <Route
-                            path="/profile"
-                            element={isSceneLoaded ? <Profile /> : null}
-                        />
-
-                        <Route
-                            path="/testzone"
-                            element={isSceneLoaded ? <Test /> : null}
-                        />
+                        <Route path="/auth/login" element={<Auth />} />
+                        <Route path="/auth/registration" element={<Auth />} />
+                        <Route path="/events" element={<EventPage />} />
+                        <Route path="/profile" element={<Profile />} />
+                        <Route path="*" element={<NotFoundPage />} />
                     </Routes>
                 </UsersMenuProvider>
+
+                <ToastContainer
+                    position="bottom-right"
+                    autoClose={2000}
+                    hideProgressBar={false}
+                    newestOnTop={true}
+                    closeOnClick
+                    rtl={false}
+                    pauseOnFocusLoss
+                    draggable
+                    pauseOnHover
+                    theme="light"
+                />
             </BrowserRouter>
         </div>
     );

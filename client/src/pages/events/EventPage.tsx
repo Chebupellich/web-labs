@@ -1,22 +1,28 @@
 import styles from './eventPageStyles.module.scss';
 import UsersMenu from '@components/general/UsersMenu.tsx';
-import { useUsersMenuContext } from '@contexts/UsersMenuContext.tsx';
+import { useUsersMenuContext } from '@contexts/hooks/useUsersMenuContext.ts';
 import { AnimatePresence } from 'framer-motion';
 import EventMenu from '@components/general/EventMenu.tsx';
 
 import EventCard from '@components/events/EventCard.tsx';
 import { useEffect, useState } from 'react';
-// @ts-ignore
-import { Categories, EventDTO, IEvent } from '@types/event.ts';
-import { testItem } from '../../../public/testingData/eventObj.ts';
+import { EventSendDTO, IEvent } from '@myTypes/event';
 import { useDragLayer } from 'react-dnd';
 import CardDeleteTarget from '@components/events/CardDeleteTarget.tsx';
 import DeleteEventModal from '@components/modals/DeleteEventModal.tsx';
 import CreateEventModal from '@components/modals/CreateEventModal.tsx';
-import { randInt } from 'three/src/math/MathUtils';
+import { useEventFilter } from '@contexts/hooks/useEventFilter';
+import {
+    createEvent,
+    deleteEvent,
+    getEvents,
+    updateEvent,
+} from '@api/eventService.ts';
+import { checkAxiosError } from '@api/axios.ts';
 
 const EventPage = () => {
     const { isButtonActive } = useUsersMenuContext();
+    const { activeCategories } = useEventFilter();
     const { isDragging, itemType } = useDragLayer((monitor) => ({
         isDragging: monitor.isDragging(),
         itemType: monitor.getItemType(),
@@ -28,19 +34,36 @@ const EventPage = () => {
     const [eventToDelete, setEventToDelete] = useState<IEvent | undefined>();
     const [showEditEventModal, setShowEditEventModal] = useState(false);
     const [selectedEvent, setSelectedEvent] = useState<IEvent | undefined>();
+    const [events, setEvents] = useState<IEvent[]>();
+    const [isMobile, setIsMobile] = useState(false);
 
-    const [events, setEvents] = useState<IEvent[]>(
-        [...Array(20)].map((_, i) => ({
-            ...testItem,
-            id: i,
-            title: `Event ${i}`,
-            category: i % 2 == 0 ? Categories.Lecture : Categories.Concert,
-        }))
-    );
+    useEffect(() => {
+        const checkMobile = () => {
+            setIsMobile(window.innerWidth <= 768);
+        };
+        checkMobile();
+
+        window.addEventListener('resize', checkMobile);
+        return () => window.removeEventListener('resize', checkMobile);
+    }, []);
+
+    useEffect(() => {
+        handleGetEvents();
+    }, []);
+
+    useEffect(() => {
+        if (events && events.length === 0) {
+            const intervalId = setInterval(() => {
+                handleGetEvents();
+            }, 1000);
+
+            return () => clearInterval(intervalId);
+        }
+    }, [events]);
 
     useEffect(() => {
         setShowDeleteTarget(isDragging && itemType === 'EVENT_ITEM');
-    }, [isDragging]);
+    }, [isDragging, itemType]);
 
     const showEditModal = (event: IEvent) => {
         if (event.id === selectedEvent?.id && showEditEventModal) {
@@ -52,52 +75,74 @@ const EventPage = () => {
         }
     };
 
-    const handleSave = (updated: {
-        title: string;
-        description?: string;
-        date: Date;
-        category: Categories;
-    }) => {
+    const handleGetEvents = () => {
+        getEvents()
+            .then((resp) => setEvents(resp))
+            .catch((err) => checkAxiosError(err));
+    };
+
+    const handleSave = (updated: IEvent) => {
         if (!selectedEvent) return;
 
-        setEvents((prevEvents) =>
-            prevEvents.map((event) =>
-                event.id === selectedEvent!.id
-                    ? {
-                          ...event,
-                          ...updated,
-                      }
-                    : event
-            )
-        );
+        updateEvent(updated)
+            .then(() => {
+                setEvents((prev) =>
+                    prev?.map((event) =>
+                        event.id === selectedEvent!.id
+                            ? {
+                                  ...event,
+                                  ...updated,
+                              }
+                            : event
+                    )
+                );
 
-        setShowEditEventModal(false);
-        setSelectedEvent(undefined);
+                setShowEditEventModal(false);
+                setSelectedEvent(undefined);
+            })
+            .catch((err) => checkAxiosError(err));
     };
 
     const handleRemove = (dropEvent: IEvent | undefined) => {
         if (!dropEvent) return;
 
-        setEvents((prev) => {
-            const exists = prev.some((event) => event.id === dropEvent.id);
-            if (!exists) return prev;
-            return prev.filter((event) => event.id !== dropEvent.id);
-        });
+        deleteEvent(dropEvent.id)
+            .then(() => {
+                setEvents((prev) => {
+                    const exists = prev?.some(
+                        (event) => event.id === dropEvent.id
+                    );
+                    if (!exists) return prev;
+                    return prev?.filter((event) => event.id !== dropEvent.id);
+                });
 
-        setShowEditEventModal(false);
-        setSelectedEvent(undefined);
+                setShowEditEventModal(false);
+                setSelectedEvent(undefined);
+            })
+            .catch((err) => checkAxiosError(err));
     };
 
-    const handleCreateEvent = (event: EventDTO) => {
-        const ev = { ...event, id: randInt(0, 19999) };
-        setEvents((prevEvents) => [ev, ...prevEvents]);
-        setShowCreateEventModal(false);
+    const handleCreateEvent = (event: EventSendDTO) => {
+        createEvent(event)
+            .then((resp) => {
+                setEvents((prev) => [resp, ...(prev ?? [])]);
+                setShowCreateEventModal(false);
+            })
+            .catch((err) => checkAxiosError(err));
     };
 
     return (
         <div className={styles.eventContainer}>
             <AnimatePresence mode="wait">
-                {isButtonActive && <UsersMenu />}
+                {isButtonActive && (
+                    <div
+                        className={
+                            isMobile ? styles.usersMenuMobileOverCenter : ''
+                        }
+                    >
+                        <UsersMenu />
+                    </div>
+                )}
             </AnimatePresence>
 
             <div className={styles.eventCenterWrap}>
@@ -116,15 +161,21 @@ const EventPage = () => {
                             </svg>
                         </div>
                     </div>
-                    {events.map((event) => (
-                        <EventCard
-                            key={'eventCard' + event.id}
-                            item={event}
-                            isOpen={showEditEventModal}
-                            events={selectedEvent}
-                            onClick={() => showEditModal(event)}
-                        />
-                    ))}
+                    {events
+                        ?.filter(
+                            (e) =>
+                                activeCategories.size === 0 ||
+                                activeCategories.has(e.category)
+                        )
+                        .map((event) => (
+                            <EventCard
+                                key={'eventCard' + event.id}
+                                item={event}
+                                isOpen={showEditEventModal}
+                                events={selectedEvent}
+                                onClick={() => showEditModal(event)}
+                            />
+                        ))}
                 </div>
             </div>
 
@@ -139,16 +190,22 @@ const EventPage = () => {
             )}
             <AnimatePresence mode="wait">
                 {showEditEventModal && selectedEvent && (
-                    <EventMenu
-                        event={selectedEvent}
-                        onClose={() => showEditModal(selectedEvent!)}
-                        onDelete={handleRemove}
-                        onSave={handleSave}
-                        onRequestDelete={(event) => {
-                            setEventToDelete(event);
-                            setShowDeleteEventModal(true);
-                        }}
-                    />
+                    <div
+                        className={
+                            isMobile ? styles.usersMenuMobileOverCenter : ''
+                        }
+                    >
+                        <EventMenu
+                            event={selectedEvent}
+                            onClose={() => showEditModal(selectedEvent!)}
+                            onDelete={handleRemove}
+                            onSave={handleSave}
+                            onRequestDelete={(event) => {
+                                setEventToDelete(event);
+                                setShowDeleteEventModal(true);
+                            }}
+                        />
+                    </div>
                 )}
             </AnimatePresence>
 

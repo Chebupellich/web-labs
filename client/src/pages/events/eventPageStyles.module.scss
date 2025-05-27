@@ -12,8 +12,26 @@
   background-color: var(--main-bg);
 
   .eventCenterWrap {
+    position: relative;
+
     width: 100%;
     height: 100%;
+
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+
+      width: 100%;
+      height: 1rem;
+
+      pointer-events: none;
+      z-index: 10;
+
+      background: linear-gradient(to bottom, var(--main-bg), transparent 1rem);
+
+    }
 
     .eventWrap {
       display: grid;
@@ -25,7 +43,7 @@
       max-height: 100%;
 
       flex: 1;
-      align-items: start;
+      align-items: center;
       padding: 1rem;
       background-color: var(--main-bg);
 
@@ -63,6 +81,25 @@
         }
       }
     }
+  }
+}
+
+@media (max-width: 768px) {
+  .usersMenuMobileOverCenter {
+    position: absolute;
+    top: 0;
+    left: 0;
+
+    width: 100%;
+    height: 100%;
+
+    z-index: 10;
+    background-color: var(--main-bg);
+  }
+
+  .eventCenterWrap {
+    position: relative;
+    z-index: 1;
   }
 }
 

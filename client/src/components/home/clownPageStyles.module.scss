@@ -6,41 +6,41 @@
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
-  padding: 0.25rem 1rem;
+  padding: 0.25em 1em;
   max-width: 100%;
   z-index: 2;
 
   .specialImage {
     position: absolute;
 
-    right: 2rem;
-    bottom: 0.25rem;
+    right: 2em;
+    bottom: 0.25em;
 
-    max-width: 15rem;
-    max-height: 15rem;
+    max-width: 15em;
+    max-height: 15em;
 
-    border-radius: 1rem;
+    border-radius: 1em;
 
     z-index: -1;
   }
 
   .appInfo {
-    margin: 0 1rem;
-    max-width: 35rem;
+    margin: 0 1em;
+    max-width: 22em;
     word-break: break-word;
 
-    font-size: 1.5rem;
+    font-size: 2em;
     font-family: $font-family-base;
   }
 
   .contactsHeader {
-    margin: 1rem 2rem;
-    font-size: 2rem;
+    margin: 1em 2em;
+    font-size: 2em;
     font-family: $font-family-bold;
   }
 
   .contacts {
-    margin: 0 1rem 0;
+    margin: 0 1em 0;
 
     .contactLinks {
       position: relative;
@@ -48,21 +48,21 @@
       display: flex;
       flex-direction: row;
       align-items: center;
-      gap: 3rem;
+      gap: 3em;
 
       background: var(--secondary-bg-color);
-      padding: 1.5rem 2rem;
-      border-radius: 3rem;
+      padding: 1.5em 2em;
+      border-radius: 3em;
 
       width: fit-content;
 
       img {
-        max-height: 5rem;
-        max-width: 5rem;
+        max-height: 5em;
+        max-width: 5em;
 
         outline: 1px solid var(--outline-color);
         border-radius: 50%;
-        outline-offset: 0.5rem;
+        outline-offset: 0.5em;
 
         transition: transform 0.2s ease-in-out,
         outline-offset 0.4s ease;
@@ -75,8 +75,8 @@
     }
 
     p {
-      margin: 0 1rem;
-      max-width: 14rem;
+      margin: 0 1em;
+      max-width: 14em;
       word-break: break-word;
       font-family: $font-family-light;
     }
@@ -85,9 +85,9 @@
 
 @keyframes pulse-outline {
   0%, 100% {
-    outline-offset: 0.3rem;
+    outline-offset: 0.3em;
   }
   50% {
-    outline-offset: 0.5rem;
+    outline-offset: 0.5em;
   }
 }

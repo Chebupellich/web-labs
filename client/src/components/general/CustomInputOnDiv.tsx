@@ -6,6 +6,7 @@ interface Props {
     updateState: (val: string) => void;
     argFontSize?: number;
     argFontWeight?: number;
+    allowEmpty: boolean;
 }
 
 const CustomInput = ({
@@ -13,6 +14,7 @@ const CustomInput = ({
     updateState,
     argFontSize,
     argFontWeight,
+    allowEmpty,
 }: Props) => {
     const [isEditing, setIsEditing] = useState(false);
     const divRef = useRef<HTMLDivElement>(null);
@@ -34,11 +36,15 @@ const CustomInput = ({
             if (event.key === 'Enter') {
                 event.preventDefault();
                 const newText = divRef.current?.textContent?.trim() || '';
-                if (newText) {
+
+                if (newText || allowEmpty) {
                     updateState(newText);
                     previousTextValue.current = newText;
-                    divRef.current?.blur();
+                } else if (divRef.current) {
+                    divRef.current.textContent = previousTextValue.current;
                 }
+
+                divRef.current?.blur();
                 setIsEditing(false);
             } else if (event.key === 'Escape') {
                 event.preventDefault();
@@ -49,19 +55,21 @@ const CustomInput = ({
                 setIsEditing(false);
             }
         },
-        [updateState]
+        [updateState, allowEmpty]
     );
 
     const handleBlur = useCallback(() => {
         const newText = divRef.current?.textContent?.trim() || '';
-        if (newText) {
+
+        if (newText || allowEmpty) {
             updateState(newText);
             previousTextValue.current = newText;
         } else if (divRef.current) {
             divRef.current.textContent = previousTextValue.current;
         }
+
         setIsEditing(false);
-    }, [updateState]);
+    }, [updateState, allowEmpty]);
 
     const sharedStyle = {
         fontSize: argFontSize ? `${argFontSize}rem` : undefined,

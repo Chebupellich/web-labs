@@ -6,7 +6,7 @@ const ErrorHandler = (
     err: unknown,
     req: Request,
     res: Response,
-    next: NextFunction,
+    _next: NextFunction,
 ): void => {
     if (err instanceof CustomError && err.statusCode < 500) {
         res.status(err.statusCode).json({ message: err.message });

@@ -11,6 +11,8 @@ body {
     box-sizing: border-box;
 }
 
+
+
 html {
     @include fluid-text(24, 6);
 }
@@ -84,4 +86,11 @@ ul {
 ol li {
     font-size: 18px;
     margin-left: 20px;
+}
+
+
+@media (max-width: 768px) {
+    html {
+        font-size: 0.8rem;
+    }
 }

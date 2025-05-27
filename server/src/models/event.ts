@@ -11,9 +11,11 @@ import { sequelize } from '@config/dbConfig.js';
 import { User } from './user.js';
 
 enum Categories {
+    NotFoundCategory = 'No category',
     Concert = 'Concert',
     Lecture = 'Lecture',
     Exhibition = 'Exhibition',
+    Durka = 'Durka',
 }
 
 class Event extends Model<

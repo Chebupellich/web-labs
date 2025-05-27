@@ -1,24 +1,25 @@
 @use '@styles/variables' as *;
+@use '@styles/uiElements' as *;
 
 .wrap {
-  margin: 1.2rem 0.8rem 0.8rem;
+  margin: 1rem;
   font-size: 5rem;
 
   .header {
-    margin-left: 0.2rem;
+    margin-left: 0.5rem;
     margin-bottom: 0.5rem;
 
-    font-family: $font-family-heading;
-
-    color: var(--main-text-color);
+    @include subheading-text;
+    font-size: 1.5rem;
   }
 
   .form {
     display: flex;
     flex-direction: column;
-    gap: 0.75rem;
+    gap: 1rem;
 
     .input {
+      box-sizing: border-box;
       width: 100%;
       padding: 0.25rem 0.7rem;
       border: 1px solid var(--secondary-text-color);
@@ -29,10 +30,15 @@
       background-color: var(--main-bg-color);
       color: var(--main-text-color);
 
-
       &:focus {
         outline: none;
         border-color: var(--active-color);
+      }
+
+      &:-webkit-autofill {
+        font-size: 1.3rem;
+        font-family: $font-family-base;
+        background-color: var(--main-bg-color);
       }
     }
 
@@ -63,7 +69,7 @@
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
       }
       &:active {
-        transform: scale(0.98); // Эффект нажатия
+        transform: scale(0.98);
       }
     }
   }

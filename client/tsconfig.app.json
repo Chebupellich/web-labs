@@ -21,6 +21,7 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true,
+    "baseUrl": ".",
     "paths": {
       "@/*": [
         "src/*"
@@ -37,7 +38,7 @@
       "@styles/*": [
         "src/styles/*"
       ],
-      "@types/*": [
+      "@myTypes/*": [
         "src/types/*"
       ],
       "@utils/*": [
@@ -45,9 +46,6 @@
       ],
       "@assets/*": [
         "src/assets/*"
-      ],
-      "@dtos/*": [
-        "src/dtos/*"
       ],
       "@contexts/*": [
         "src/contexts/*"

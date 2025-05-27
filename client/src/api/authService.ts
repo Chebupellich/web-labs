@@ -1,4 +1,4 @@
-import { User, UserReq, UserResp } from '@/types/user.ts';
+import { User, UserReq, UserResp } from '@myTypes/user';
 import api from '@api/axios.ts';
 
 export const registerUser = async (

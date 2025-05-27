@@ -32,7 +32,7 @@ const tabs: Tab[] = [
         component: <Clown color="#e3367b" />,
     },
 ];
-// STOP
+
 const Home = () => {
     const [isVisible, setIsVisible] = useState(false);
     const [activeTabIndex, setActiveTabIndex] = useState(0);
@@ -80,14 +80,12 @@ const Home = () => {
 
     return (
         <motion.div
-            initial={{ x: '-100%', y: 25 }}
-            animate={{ x: isVisible ? 50 : '-100%' }}
-            exit={{ x: '-100%' }}
-            transition={{ duration: 0.2, ease: 'easeOut' }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: isVisible ? 1 : 0 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.1, ease: 'easeOut' }}
             className={styles.container}
         >
-            {/* Пофиксить при появлении элемента отображение на короткий промежуток времени дочерних элементов */}
-            {/*Придумать как передавать отступ в rem от родителя*/}
             <motion.div
                 ref={contentRef}
                 className={styles.content}
@@ -162,7 +160,5 @@ const Home = () => {
         </motion.div>
     );
 };
-
-// TODO: transition before switch
 
 export default Home;

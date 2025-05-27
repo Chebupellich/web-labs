@@ -1,8 +1,7 @@
 import { Dialog } from '@headlessui/react';
 import dialogStyles from './styles/dialogModalsStyles.module.scss';
 import styles from './styles/createEventStyles.module.scss';
-// @ts-ignore
-import { Categories, IEvent, EventDTO, UserInfo } from '@types/event.ts';
+import { Categories, EventSendDTO } from '@myTypes/event';
 import { useContext, useRef, useState } from 'react';
 import CategorySelect from '@components/events/CategorySelect.tsx';
 import { AuthContext } from '@contexts/AuthContext.tsx';
@@ -10,7 +9,7 @@ import { AuthContext } from '@contexts/AuthContext.tsx';
 type Props = {
     isOpen: boolean;
     onClose: () => void;
-    onConfirm: (event: EventDTO) => void;
+    onConfirm: (event: EventSendDTO) => void;
 };
 
 const CreateEventModal = ({ isOpen, onClose, onConfirm }: Props) => {
@@ -27,12 +26,12 @@ const CreateEventModal = ({ isOpen, onClose, onConfirm }: Props) => {
     const handleSubmit = () => {
         if (!isFormValid) return;
 
-        const newEvent: EventDTO = {
+        const newEvent: EventSendDTO = {
             title,
             category,
             date: new Date(date),
             description: '',
-            createdBy: user,
+            createdBy: user?.id,
         };
 
         onConfirm(newEvent);

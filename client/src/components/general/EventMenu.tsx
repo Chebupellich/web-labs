@@ -1,7 +1,6 @@
 import styles from './styles/eventMenuStyles.module.scss';
 import { motion } from 'framer-motion';
-// @ts-ignore
-import { Categories, IEvent } from '@types/event.ts';
+import { IEvent } from '@myTypes/event';
 import { useEffect, useState } from 'react';
 
 import CustomInputOnDiv from '@components/general/CustomInputOnDiv.tsx';
@@ -18,12 +17,7 @@ interface Props {
     event: IEvent;
     onClose: () => void;
     onDelete: (event: IEvent) => void;
-    onSave: (updated: {
-        title: string;
-        description?: string;
-        date: Date;
-        category: Categories;
-    }) => void;
+    onSave: (updated: IEvent) => void;
     onRequestDelete: (event: IEvent) => void;
 }
 
@@ -53,12 +47,15 @@ const EventMenu = ({ event, onClose, onSave, onRequestDelete }: Props) => {
     };
 
     const handleSave = () => {
-        onSave({
+        const updatedEvent: IEvent = {
+            ...event,
             title: formTitle,
             description: descriptionState,
             date: new Date(dateState),
             category: curCategory,
-        });
+        };
+
+        onSave(updatedEvent);
     };
 
     const handleDelete = () => {
@@ -81,6 +78,7 @@ const EventMenu = ({ event, onClose, onSave, onRequestDelete }: Props) => {
                         updateState={setFormTitle}
                         argFontSize={2}
                         argFontWeight={600}
+                        allowEmpty={false}
                     />
                     <div className={styles.headerIconGroup}>
                         <svg
@@ -119,6 +117,7 @@ const EventMenu = ({ event, onClose, onSave, onRequestDelete }: Props) => {
                                 updateState={setDescriptionState}
                                 argFontSize={1.3}
                                 argFontWeight={500}
+                                allowEmpty={true}
                             />
                         </div>
                     </div>

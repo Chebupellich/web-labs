@@ -3,6 +3,7 @@ import { User } from '@models/user.js';
 import { EventDto, ReqEventDto } from '@dtos/eventDto.js';
 import { CustomError, StatusCodes } from '@errors/customError.js';
 import eventMapper from '../mappers/eventMapper.js';
+import * as fs from 'node:fs';
 
 class EventService {
     static async getEvents(
@@ -55,7 +56,18 @@ class EventService {
         }
 
         const createdEvent = await Event.create(event);
-        return eventMapper.toDto(createdEvent);
+        const fullEvent: Event | null = await Event.findByPk(createdEvent.id, {
+            attributes: ['id', 'title', 'description', 'date', 'category'],
+            include: [
+                {
+                    model: User,
+                    as: 'user',
+                    attributes: ['id', 'name', 'email'],
+                },
+            ],
+        });
+
+        return eventMapper.toDto(fullEvent!);
     }
 
     static async updateEvent(

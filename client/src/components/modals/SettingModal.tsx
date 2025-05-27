@@ -6,7 +6,7 @@ import ToggleSwitch from '@components/general/ToggleSwitch.tsx';
 
 import { AnimatePresence, motion } from 'framer-motion';
 import { useState } from 'react';
-import { useTheme } from '@contexts/ThemeContext.tsx';
+import { useTheme } from '@contexts/hooks/useTheme.ts';
 
 const SettingsModal = () => {
     const { theme, toggleTheme } = useTheme();

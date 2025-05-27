@@ -10,7 +10,7 @@ export const InitAxiosInterceptors = () => {
         if (auth?.logout) {
             setupInterceptors(auth.logout);
         }
-    }, []);
+    }, [auth?.logout]);
 
     return null;
 };

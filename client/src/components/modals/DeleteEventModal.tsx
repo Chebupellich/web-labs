@@ -1,7 +1,6 @@
 import { Dialog } from '@headlessui/react';
 import styles from './styles/dialogModalsStyles.module.scss';
-// @ts-ignore
-import { IEvent } from '@types/event.ts';
+import { IEvent } from '@myTypes/event';
 
 type Props = {
     event: IEvent | undefined;

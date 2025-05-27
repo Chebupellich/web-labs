@@ -66,6 +66,8 @@ class EventController {
         res: Response,
         next: NextFunction,
     ): Promise<void> {
+        console.log('event');
+
         try {
             const parsedEvent: ReqEventDto = createEventSchema.parse(req.body);
             const event = await EventService.createEvent(parsedEvent);

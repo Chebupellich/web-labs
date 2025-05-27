@@ -212,3 +212,16 @@
     }
   }
 }
+
+@media (max-width: 768px) {
+  .eventMenuContainer {
+    width: 100% !important;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+
+    z-index: 9;
+    background-color: var(--main-bg);
+  }
+}

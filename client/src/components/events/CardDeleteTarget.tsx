@@ -2,8 +2,9 @@ import { useDrop } from 'react-dnd';
 import { motion } from 'framer-motion';
 import styles from './cardDeleteStyles.module.scss';
 import { createPortal } from 'react-dom';
-import { IEvent } from '../../types/event.ts';
+import { IEvent } from '@myTypes/event';
 import { useDebounce } from '@uidotdev/usehooks';
+import { useEffect, useRef } from 'react';
 
 interface Props {
     onDrop: (event: IEvent) => void;
@@ -22,9 +23,17 @@ const CardDeleteTarget = ({ onDrop }: Props) => {
     }));
     const debouncedOver = useDebounce(isOver, 10);
 
+    const ref = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        if (ref.current) {
+            drop(ref);
+        }
+    }, [drop]);
+
     return createPortal(
         <motion.div
-            ref={drop}
+            ref={ref}
             className={styles.wrap}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}

@@ -1,8 +1,9 @@
 import { useDrag } from 'react-dnd';
-import { IEvent } from '../../types/event.ts';
+import { Categories, categoryIcons, IEvent } from '@/types/event.ts';
 
 import styles from './eventCardStyles.module.scss';
 import Logo from '@components/general/Logo.tsx';
+import { useRef } from 'react';
 
 interface Props {
     item: IEvent;
@@ -20,15 +21,20 @@ const EventCard = ({ item, isOpen, events, onClick }: Props) => {
         }),
     }));
 
+    const ref = useRef<HTMLDivElement>(null);
+    drag(ref);
+
     const formattedDate = new Date(item.date).toLocaleDateString('ru-RU', {
         day: 'numeric',
         month: 'long',
         year: 'numeric',
     });
 
+    const IconComponent = categoryIcons[item.category];
+
     return (
         <div
-            ref={drag}
+            ref={ref}
             className={`${styles.eventCardWrap} ${isOpen ? styles.activeWrap : ''}`}
             style={{
                 opacity: isDragging ? 0.7 : 1,
@@ -41,6 +47,18 @@ const EventCard = ({ item, isOpen, events, onClick }: Props) => {
             onClick={onClick}
         >
             <h2 className={styles.cardHeader}>{item.title}</h2>
+            {item.category !== Categories.NotFoundCategory && (
+                <div className={styles.category}>
+                    <h2 className={styles.categoryHeader}>{item.category}</h2>
+                    {IconComponent && (
+                        <img
+                            className={styles.categoryIcon}
+                            src={IconComponent}
+                            alt="icon"
+                        />
+                    )}
+                </div>
+            )}
             <p className={styles.description}>{item.description}</p>
             <div className={styles.cardInfo}>
                 <div className={styles.userInfo}>

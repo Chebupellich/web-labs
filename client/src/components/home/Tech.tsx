@@ -48,9 +48,9 @@ const Tech = ({ color }: Props) => {
                     <div
                         className={styles.techImages}
                         style={{
-                            borderRadius: '1.25rem',
+                            borderRadius: '.55em',
                             backgroundColor: '#fff312',
-                            padding: '0.5rem',
+                            padding: '0.25em',
                         }}
                     >
                         <a

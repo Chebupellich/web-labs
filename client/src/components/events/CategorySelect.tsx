@@ -1,11 +1,6 @@
-import Select, {
-    ActionMeta,
-    GroupBase,
-    SingleValue,
-    StylesConfig,
-} from 'react-select';
-// @ts-ignore
-import { Categories, categoryOptions } from '@types/event.ts';
+import Select, { GroupBase, SingleValue, StylesConfig } from 'react-select';
+import { Categories } from '@myTypes/event';
+import { useMemo } from 'react';
 
 interface Props {
     category: Categories;
@@ -44,7 +39,7 @@ const customStyles: StylesConfig<
         fontSize: '1.2rem',
         fontWeight: 700,
         cursor: 'pointer',
-        borderRadius: 0, // убрано скругление
+        borderRadius: 0,
     }),
     singleValue: (base) => ({
         ...base,
@@ -99,9 +94,16 @@ const customStyles: StylesConfig<
 };
 
 const CategorySelect = ({ category, onSelect }: Props) => {
+    const categoryOptions = useMemo(
+        () =>
+            Object.values(Categories).map((value) => ({
+                value,
+                label: value,
+            })),
+        []
+    );
     const handleChange = (
-        newValue: SingleValue<{ value: string; label: Categories }>,
-        actionMeta: ActionMeta<{ value: string; label: Categories }>
+        newValue: SingleValue<{ value: string; label: Categories }>
     ) => {
         if (newValue) {
             onSelect(newValue.label);
