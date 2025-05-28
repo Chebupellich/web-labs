@@ -28,14 +28,6 @@ export interface IEvent {
     category: Categories;
 }
 
-export interface EventDTO {
-    title: string;
-    description?: string;
-    date: Date;
-    createdBy: UserInfo;
-    category: Categories;
-}
-
 export interface EventSendDTO {
     title: string;
     description?: string;

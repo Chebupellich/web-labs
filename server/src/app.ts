@@ -9,8 +9,16 @@ import { setupMiddlewares } from '@middleware/_middlewares.js';
 import { setupRoutes } from '@routes/_routes.js';
 import { setupAssociations } from '@models/associations.js';
 import errorMiddleware from '@middleware/errorMiddleware.js';
+import cors from 'cors';
 
 const app: Express = express();
+app.use(
+    cors({
+        origin: 'http://localhost:5173',
+        credentials: true,
+    }),
+);
+
 passportConfig(passport);
 
 setupMiddlewares(app);

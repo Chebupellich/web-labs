@@ -4,7 +4,6 @@ import { appConfig } from '@/config.ts';
 import { toast } from 'react-toastify';
 
 const api = axios.create({ baseURL: appConfig.baseUrl });
-console.log(appConfig.baseUrl);
 api.interceptors.request.use(
     (config) => {
         const token = getFromLocalStorage(appConfig.lsAccessToken);
@@ -24,7 +23,6 @@ export const setupInterceptors = (logout: () => void) => {
         (error) => {
             if (error.response?.status === 401) {
                 logout();
-                console.log('UNAUTHORIZED KEKW');
             }
             return Promise.reject(error);
         }

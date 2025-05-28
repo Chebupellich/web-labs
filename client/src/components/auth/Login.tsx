@@ -1,18 +1,29 @@
 import styles from './authFormStyles.module.scss';
-import React, { useContext, useState } from 'react';
-import { AuthContext } from '@contexts/AuthContext.tsx';
-import { loginUser } from '@api/authService.ts';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { AxiosError } from 'axios';
-import { checkAxiosError } from '@api/axios.ts';
+import { useAppDispatch, useAppSelector } from '@/store/hooks';
+import { login } from '@/store/slices/authSlice';
 
 const Login = () => {
-    const { login } = useContext(AuthContext)!;
+    const dispatch = useAppDispatch();
+    const navigate = useNavigate();
+
+    const { loading, user } = useAppSelector((state) => state.auth);
+
     const [formData, setFormData] = useState({
         email: '',
         password: '',
     });
-    const navigate = useNavigate();
+
+    useEffect(() => {
+        if (user) {
+            const timer = setTimeout(() => {
+                navigate('/events');
+            }, 1000);
+
+            return () => clearTimeout(timer);
+        }
+    }, [user, navigate]);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
@@ -22,20 +33,9 @@ const Login = () => {
         }));
     };
 
-    const handleSubmit = async (e: React.FormEvent) => {
+    const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-
-        try {
-            const resp = await loginUser(formData);
-            login(resp.user, resp.accessToken);
-
-            const timer = setTimeout(() => {
-                navigate('/events');
-            }, 1000);
-            return () => clearTimeout(timer);
-        } catch (err) {
-            checkAxiosError(err as AxiosError);
-        }
+        dispatch(login(formData));
     };
 
     return (
@@ -64,8 +64,12 @@ const Login = () => {
                     placeholder="••••••••"
                 />
 
-                <button type="submit" className={styles.submitButton}>
-                    Login
+                <button
+                    type="submit"
+                    className={styles.submitButton}
+                    disabled={loading}
+                >
+                    {loading ? 'Logging in...' : 'Login'}
                 </button>
             </form>
         </div>

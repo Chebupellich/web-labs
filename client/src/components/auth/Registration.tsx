@@ -1,22 +1,28 @@
 import styles from './authFormStyles.module.scss';
-import React, { useContext, useState } from 'react';
-import { registerUser } from '@api/authService.ts';
-import { AuthContext } from '@contexts/AuthContext.tsx';
-import { checkAxiosError } from '@api/axios.ts';
-import { AxiosError } from 'axios';
+import React, { useState, useEffect } from 'react';
+import { useAppDispatch, useAppSelector } from '@/store/hooks';
+import { register } from '@/store/slices/authSlice';
 
 interface Props {
     onRegister: () => void;
 }
 
 const Registration = ({ onRegister }: Props) => {
-    const { logout } = useContext(AuthContext)!;
+    const dispatch = useAppDispatch();
+
+    const { loading, user, error } = useAppSelector((state) => state.auth);
 
     const [formData, setFormData] = useState({
         name: '',
         email: '',
         password: '',
     });
+
+    useEffect(() => {
+        if (!loading && error === null && user) {
+            onRegister();
+        }
+    }, [loading, error, onRegister, user]);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
@@ -26,16 +32,10 @@ const Registration = ({ onRegister }: Props) => {
         }));
     };
 
-    const handleSubmit = async (e: React.FormEvent) => {
+    const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-
-        try {
-            await registerUser(formData);
-            onRegister();
-            logout();
-        } catch (error) {
-            checkAxiosError(error as AxiosError);
-        }
+        dispatch(register(formData));
+        onRegister();
     };
 
     return (
@@ -75,8 +75,12 @@ const Registration = ({ onRegister }: Props) => {
                     placeholder="••••••••"
                 />
 
-                <button type="submit" className={styles.submitButton}>
-                    Sign up
+                <button
+                    type="submit"
+                    className={styles.submitButton}
+                    disabled={loading}
+                >
+                    {loading ? 'Signing up...' : 'Sign up'}
                 </button>
             </form>
         </div>

@@ -22,13 +22,13 @@
       box-sizing: border-box;
       width: 100%;
       padding: 0.25rem 0.7rem;
-      border: 1px solid var(--secondary-text-color);
+      border: 1px solid var(--border-color);
       border-radius: 4px;
 
       font-family: $font-family-base;
       font-size: 0.9rem;
       background-color: var(--main-bg-color);
-      color: var(--main-text-color);
+      color: var(--text-color);
 
       &:focus {
         outline: none;
@@ -38,7 +38,7 @@
       &:-webkit-autofill {
         font-size: 1.3rem;
         font-family: $font-family-base;
-        background-color: var(--main-bg-color);
+        background-color: var(--main-bg);
       }
     }
 
@@ -51,7 +51,7 @@
       height: 2rem;
       padding: 0.25rem 0.7rem;
       background-color: var(--active-color);
-      color: var(--main-text-color);
+      color: #fff;
 
       border: none;
       border-radius: 0.75rem;

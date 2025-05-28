@@ -1,27 +1,30 @@
-import { useContext, useEffect, useState } from 'react';
-import { AuthContext } from '@contexts/AuthContext.tsx';
+import { useEffect, useState } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Popover } from '@headlessui/react';
 
 import styles from './headerStyles.module.scss';
 import SettingsModal from '@components/modals/SettingModal.tsx';
-import { useUsersMenuContext } from '@contexts/hooks/useUsersMenuContext.ts';
 import FilterModal from '@components/modals/FilterModal.tsx';
 
-const Header = () => {
-    const { user, loading } = useContext(AuthContext)!;
-    const { isButtonActive, setIsButtonActive } = useUsersMenuContext();
+import { RootState } from '@store/store.ts';
+import { toggleUserMenu } from '@store/slices/uiSlice';
 
+const Header = () => {
+    const dispatch = useDispatch();
     const navigate = useNavigate();
     const location = useLocation();
+
+    const user = useSelector((state: RootState) => state.auth.user);
+    const loading = useSelector((state: RootState) => state.auth.loading);
+    const isButtonActive = useSelector(
+        (state: RootState) => state.ui.showUsersMenu
+    );
 
     const [windowWidth, setWindowWidth] = useState(window.innerWidth);
 
     useEffect(() => {
-        const handleResize = () => {
-            setWindowWidth(window.innerWidth);
-        };
-
+        const handleResize = () => setWindowWidth(window.innerWidth);
         window.addEventListener('resize', handleResize);
         return () => window.removeEventListener('resize', handleResize);
     }, []);
@@ -29,7 +32,6 @@ const Header = () => {
     const checkAuth = (navFunc: () => void) => {
         if (!user) {
             if (
-                location.pathname !== '/' &&
                 !location.pathname.includes('/auth/login') &&
                 !location.pathname.includes('/auth/registration')
             ) {
@@ -44,23 +46,32 @@ const Header = () => {
         if (!loading && user && location.pathname.includes('/auth')) {
             navigate('/events');
         } else if (!user) {
-            navigate('/auth/login');
+            if (
+                location.pathname !== '/' &&
+                !location.pathname.includes('/auth/login') &&
+                !location.pathname.includes('/auth/registration')
+            ) {
+                navigate('/auth/login');
+            }
         }
     }, [loading, location.pathname, navigate, user]);
 
     useEffect(() => {
         if (!location.pathname.includes('/events')) {
-            setIsButtonActive(false);
+            if (isButtonActive) {
+                dispatch(toggleUserMenu());
+            }
         }
-    }, [location, setIsButtonActive]);
+    }, [location, isButtonActive, dispatch]);
 
     const handleUserClick = () => checkAuth(() => navigate('/profile'));
     const handleEventsClick = () => checkAuth(() => navigate('/events'));
     const handleUsersMenuClick = () => {
-        if (!checkEventLocation()) return;
+        if (!location.pathname.includes('/events')) return;
         checkAuth(() => navigate('/events'));
-        setIsButtonActive(!isButtonActive);
+        dispatch(toggleUserMenu());
     };
+
     const checkEventLocation = () => location.pathname.includes('/events');
     const checkProfileLocation = () =>
         location.pathname.includes('/profile') ||
@@ -215,4 +226,5 @@ const Header = () => {
         </div>
     );
 };
+
 export default Header;

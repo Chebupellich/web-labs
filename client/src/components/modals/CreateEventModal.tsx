@@ -2,9 +2,10 @@ import { Dialog } from '@headlessui/react';
 import dialogStyles from './styles/dialogModalsStyles.module.scss';
 import styles from './styles/createEventStyles.module.scss';
 import { Categories, EventSendDTO } from '@myTypes/event';
-import { useContext, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import CategorySelect from '@components/events/CategorySelect.tsx';
-import { AuthContext } from '@contexts/AuthContext.tsx';
+import { useSelector } from 'react-redux';
+import type { RootState } from '@store/store'; // Импорт типа корневого состояния Redux
 
 type Props = {
     isOpen: boolean;
@@ -13,7 +14,7 @@ type Props = {
 };
 
 const CreateEventModal = ({ isOpen, onClose, onConfirm }: Props) => {
-    const { user } = useContext(AuthContext)!;
+    const user = useSelector((state: RootState) => state.auth.user);
 
     const [title, setTitle] = useState('');
     const [category, setCategory] = useState<Categories>(Categories.Concert);

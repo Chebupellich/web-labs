@@ -17,6 +17,31 @@ class UserService {
         });
     }
 
+    async getUser(id: number): Promise<UserDto> {
+        const foundUser = await User.findByPk(id);
+        if (!foundUser) {
+            throw new CustomError(
+                StatusCodes.Conflict,
+                `user with id ${id} not found`,
+            );
+        }
+
+        return UserMapper.toDto(foundUser);
+    }
+
+    async updateUser(user: UserDto): Promise<UserDto> {
+        const foundUser = await User.findByPk(user.id);
+        if (!foundUser) {
+            throw new CustomError(
+                StatusCodes.Conflict,
+                `user with id ${user.id} not found`,
+            );
+        }
+
+        const updatedUser = await foundUser.update(user);
+        return UserMapper.toDto(updatedUser);
+    }
+
     async createUser(userReq: Required<ReqUserDto>): Promise<UserDto> {
         const hashedPassword: string = await bcrypt.hash(userReq.password, 10);
         const [user, created]: [User, boolean] = await User.findOrCreate({

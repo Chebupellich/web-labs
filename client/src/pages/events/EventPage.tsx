@@ -1,28 +1,33 @@
 import styles from './eventPageStyles.module.scss';
 import UsersMenu from '@components/general/UsersMenu.tsx';
-import { useUsersMenuContext } from '@contexts/hooks/useUsersMenuContext.ts';
 import { AnimatePresence } from 'framer-motion';
 import EventMenu from '@components/general/EventMenu.tsx';
-
 import EventCard from '@components/events/EventCard.tsx';
 import { useEffect, useState } from 'react';
-import { EventSendDTO, IEvent } from '@myTypes/event';
+import { IEvent, EventSendDTO } from '@myTypes/event';
 import { useDragLayer } from 'react-dnd';
 import CardDeleteTarget from '@components/events/CardDeleteTarget.tsx';
 import DeleteEventModal from '@components/modals/DeleteEventModal.tsx';
 import CreateEventModal from '@components/modals/CreateEventModal.tsx';
-import { useEventFilter } from '@contexts/hooks/useEventFilter';
+
+import { useDispatch, useSelector } from 'react-redux';
 import {
-    createEvent,
+    fetchEvents,
     deleteEvent,
-    getEvents,
     updateEvent,
-} from '@api/eventService.ts';
-import { checkAxiosError } from '@api/axios.ts';
+    addEvent,
+} from '@store/slices/eventsSlice.ts';
+import type { AppDispatch, RootState } from '@store/store.ts';
 
 const EventPage = () => {
-    const { isButtonActive } = useUsersMenuContext();
-    const { activeCategories } = useEventFilter();
+    const dispatch = useDispatch<AppDispatch>();
+    const isButtonActive = useSelector(
+        (state: RootState) => state.ui.showUsersMenu
+    );
+    const activeCategories = useSelector(
+        (state: RootState) => state.ui.activeCategories
+    );
+
     const { isDragging, itemType } = useDragLayer((monitor) => ({
         isDragging: monitor.isDragging(),
         itemType: monitor.getItemType(),
@@ -34,32 +39,39 @@ const EventPage = () => {
     const [eventToDelete, setEventToDelete] = useState<IEvent | undefined>();
     const [showEditEventModal, setShowEditEventModal] = useState(false);
     const [selectedEvent, setSelectedEvent] = useState<IEvent | undefined>();
-    const [events, setEvents] = useState<IEvent[]>();
     const [isMobile, setIsMobile] = useState(false);
 
-    useEffect(() => {
-        const checkMobile = () => {
-            setIsMobile(window.innerWidth <= 768);
-        };
-        checkMobile();
+    const { events, loading } = useSelector((state: RootState) => state.events);
 
+    // Handle mobile resize
+    useEffect(() => {
+        const checkMobile = () => setIsMobile(window.innerWidth <= 768);
+        checkMobile();
         window.addEventListener('resize', checkMobile);
         return () => window.removeEventListener('resize', checkMobile);
     }, []);
 
     useEffect(() => {
-        handleGetEvents();
-    }, []);
+        dispatch(fetchEvents());
+    }, [dispatch]);
 
     useEffect(() => {
-        if (events && events.length === 0) {
-            const intervalId = setInterval(() => {
-                handleGetEvents();
-            }, 1000);
+        let attempts = 0;
+        let intervalId: NodeJS.Timeout;
+
+        if (events.length === 0) {
+            intervalId = setInterval(() => {
+                if (attempts >= 5) {
+                    clearInterval(intervalId);
+                    return;
+                }
+                dispatch(fetchEvents());
+                attempts++;
+            }, 2000);
 
             return () => clearInterval(intervalId);
         }
-    }, [events]);
+    }, [events.length, dispatch]);
 
     useEffect(() => {
         setShowDeleteTarget(isDragging && itemType === 'EVENT_ITEM');
@@ -75,60 +87,23 @@ const EventPage = () => {
         }
     };
 
-    const handleGetEvents = () => {
-        getEvents()
-            .then((resp) => setEvents(resp))
-            .catch((err) => checkAxiosError(err));
-    };
-
     const handleSave = (updated: IEvent) => {
         if (!selectedEvent) return;
-
-        updateEvent(updated)
-            .then(() => {
-                setEvents((prev) =>
-                    prev?.map((event) =>
-                        event.id === selectedEvent!.id
-                            ? {
-                                  ...event,
-                                  ...updated,
-                              }
-                            : event
-                    )
-                );
-
-                setShowEditEventModal(false);
-                setSelectedEvent(undefined);
-            })
-            .catch((err) => checkAxiosError(err));
+        dispatch(updateEvent(updated));
+        setShowEditEventModal(false);
+        setSelectedEvent(undefined);
     };
 
-    const handleRemove = (dropEvent: IEvent | undefined) => {
-        if (!dropEvent) return;
-
-        deleteEvent(dropEvent.id)
-            .then(() => {
-                setEvents((prev) => {
-                    const exists = prev?.some(
-                        (event) => event.id === dropEvent.id
-                    );
-                    if (!exists) return prev;
-                    return prev?.filter((event) => event.id !== dropEvent.id);
-                });
-
-                setShowEditEventModal(false);
-                setSelectedEvent(undefined);
-            })
-            .catch((err) => checkAxiosError(err));
+    const handleRemove = (event?: IEvent) => {
+        if (!event) return;
+        dispatch(deleteEvent({ id: event.id }));
+        setShowEditEventModal(false);
+        setSelectedEvent(undefined);
     };
 
     const handleCreateEvent = (event: EventSendDTO) => {
-        createEvent(event)
-            .then((resp) => {
-                setEvents((prev) => [resp, ...(prev ?? [])]);
-                setShowCreateEventModal(false);
-            })
-            .catch((err) => checkAxiosError(err));
+        dispatch(addEvent(event));
+        setShowCreateEventModal(false);
     };
 
     return (
@@ -161,21 +136,23 @@ const EventPage = () => {
                             </svg>
                         </div>
                     </div>
-                    {events
-                        ?.filter(
-                            (e) =>
-                                activeCategories.size === 0 ||
-                                activeCategories.has(e.category)
-                        )
-                        .map((event) => (
-                            <EventCard
-                                key={'eventCard' + event.id}
-                                item={event}
-                                isOpen={showEditEventModal}
-                                events={selectedEvent}
-                                onClick={() => showEditModal(event)}
-                            />
-                        ))}
+
+                    {!loading &&
+                        events
+                            .filter(
+                                (e) =>
+                                    activeCategories.length === 0 ||
+                                    activeCategories.includes(e.category)
+                            )
+                            .map((event) => (
+                                <EventCard
+                                    key={'eventCard' + event.id}
+                                    item={event}
+                                    isOpen={showEditEventModal}
+                                    events={selectedEvent}
+                                    onClick={() => showEditModal(event)}
+                                />
+                            ))}
                 </div>
             </div>
 
@@ -188,6 +165,7 @@ const EventPage = () => {
                     }}
                 />
             )}
+
             <AnimatePresence mode="wait">
                 {showEditEventModal && selectedEvent && (
                     <div
@@ -226,7 +204,7 @@ const EventPage = () => {
             <CreateEventModal
                 isOpen={showCreateEventModal}
                 onClose={() => setShowCreateEventModal(false)}
-                onConfirm={(event) => handleCreateEvent(event)}
+                onConfirm={handleCreateEvent}
             />
         </div>
     );
